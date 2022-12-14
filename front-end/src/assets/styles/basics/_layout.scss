@@ -1,0 +1,64 @@
+.main-container {
+    display: grid;
+    column-gap: 1.6rem;
+    padding-top: 3rem;
+    grid-template-columns: 0px 1fr 0px;
+    // padding-bottom: 110px;
+
+    > * {
+        grid-column: 2;
+    }
+
+    > .full {
+        grid-column: 1 / -1;
+    }
+
+    @include for-mobile-layout {
+        column-gap: 0;
+        padding: 0px 15px;
+    }
+
+    @include for-narrow-layout {
+        grid-template-columns: 1fr;
+        padding: 0px 15px;
+
+
+        > * {
+            grid-column: 1;
+        }
+
+        // grid-template-columns: 1fr minmax(auto, $mobile-breakpoint) 1fr;
+    }
+
+    @include for-normal-layout {
+        grid-template-columns: 1fr;
+        padding: 3rem 0px 0px 0px ;
+
+        > * {
+            grid-column: 1;
+        }
+
+        // grid-template-columns: 1fr minmax(auto, $narrow-breakpoint) 1fr;
+    }
+
+    @include for-wide-layout {
+        grid-template-columns: 1fr minmax(auto, $normal-breakpoint + 200) 1fr;
+
+        > * {
+            grid-column: 2;
+        }
+
+        //grid-template-columns:10px minmax(auto, 1fr) 10px;
+    }
+
+    @include for-extra-wide-layout {
+        grid-template-columns: 1fr minmax(auto, $normal-breakpoint + 600) 1fr;
+
+        > * {
+            grid-column: 2;
+        }
+
+        //grid-template-columns:10px minmax(auto, 1fr) 10px;
+    }
+}
+

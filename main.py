@@ -1,17 +1,9 @@
 import pandas as pd
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy.random as rnd
 from sklearn import linear_model
 # import numpy
 import copy
-
-''''
-class conditions:
-    def __init__(self, tide, wind_s, wind_d, swell_h, swell_d, swell_p):
-        self.tide = tide
-        self.wind_s = wind_s
-        self.wind_d = 
-        '''
 
 
 def make_table(size=300):
@@ -114,5 +106,5 @@ def best_list(conditions: list):
 
     return cond_list
 
-#sdfsdlflsadf
+
 print(best_list(this_day))

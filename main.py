@@ -114,5 +114,5 @@ def best_list(conditions: list):
 
     return cond_list
 
-
+#sdfsdlflsadf
 print(best_list(this_day))

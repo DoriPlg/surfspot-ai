@@ -8,7 +8,6 @@ export function Home() {
             <div className="hero">
                 <h1>BestBeach</h1>
                 <h4>Find the right beach for you</h4>
-                banana
                 <div className='findbtn'>Find</div>
             </div>
             <div className="wall">

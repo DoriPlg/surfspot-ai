@@ -11,6 +11,7 @@ beach_names = ["Pirza", "Marina main", "Marina bath", "Marina open", "Gazibo", "
 
 
 # returns number representing wind direction in relation to shore
+# it is possible to add finer tuning!
 def wind_dir(deg):
     while deg > 360 or deg < 0:
         if deg > 360:

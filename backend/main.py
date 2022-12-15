@@ -4,10 +4,32 @@ import numpy.random as rnd
 from sklearn import linear_model
 # import numpy
 import copy
+pd.set_option('display.max_columns', None)
 
 
+beach_names = ["Pirza", "Marina main", "Marina bath", "Marina open", "Gazibo", "9Beach", "Sidni Ali", "Gaash"]
+
+
+# returns ordinal wind direction, probably useless
+def wind_dir(deg):
+    while deg > 360 or deg < 0:
+        if deg > 360:
+            deg -= 360
+        if deg < 0:
+            deg += 360
+    if 325 >= deg >= 245:
+        return "On-shore"
+    elif 140 >= deg >= 70:
+        return "Off-shore"
+    else:
+        return "Cross-shore"
+
+
+# creates random data table, to work with. NO CORRELATION TO REALITY
 def make_table(size=300):
-    beach = rnd.randint(1, 15, size)
+    beach = []
+    for i in range(size):
+        beach.append(beach_names[rnd.randint(0, len(beach_names))])
     tide = rnd.randint(-1, 3, size)
     for i in range(len(tide)):
         if tide[i] == 1: tide[i] = 0
@@ -52,7 +74,8 @@ def make_table(size=300):
     return pd.DataFrame(tab)
 
 
-def rate_for_current(today: list, beach: int, main_data: pd.DataFrame):  # switch to string when the time comes
+# returns the foreseen "actual" rating for certain conditions, in a certain beach, in a given dataframe
+def rate_for_current(today: list, beach: str, main_data: pd.DataFrame):  # switch to string when the time comes
     df = copy.copy(main_data)
     for x in df.index:
         if df.loc[x, "Tide"] != today[-1]:
@@ -85,15 +108,11 @@ def rate_for_current(today: list, beach: int, main_data: pd.DataFrame):  # switc
     return regress.predict(today)
 
 
-# grand = pd.read_json('data.json')
-grand = make_table(2500)
-print(grand)
-this_day = [4, 80, 1.3, 265, 8, 1]
-
-
+# returns sorted list of beaches and their rating
 def best_list(conditions: list):
     cond_list = []
-    for i in range(1, 15):
+    global beach_names
+    for i in beach_names:
         x = rate_for_current(conditions, i, grand)[0]
         print(x)
         a = 0
@@ -103,8 +122,18 @@ def best_list(conditions: list):
             cond_list.insert(a, [i, x])
         except:
             cond_list.append([a, x])
-
     return cond_list
 
 
+# creates a json file to use as the data source (fictive)
+def update_json():
+    grand = make_table(500)
+    grand.to_json(r'~/Documents/Python/BestBeach/backend/GreatBigData.json')
+    print("Done")
+
+
+# update_json()
+grand = pd.read_json('GreatBigData.json')
+print(grand)
+this_day = [4, 80, 1.3, 275, 8, 1]  # "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide"
 print(best_list(this_day))

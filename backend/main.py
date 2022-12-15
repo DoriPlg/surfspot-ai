@@ -23,7 +23,8 @@ def wind_dir(deg):
     elif 140 >= deg >= 70:
         return 1  # offshore
     else:
-        return 4  # sideshore
+        if 20 <= deg <= 190: return 3  # side-offshore
+        return 4  # side-onshore
 
 
 # creates random data table, to work with. NO CORRELATION TO REALITY

@@ -42,8 +42,8 @@ def make_table(size=300):
         actual[i] = round(actual[i], 0)
         if actual[i] > 7:
             actual[i] = 7
-        if actual[i] < 0:
-            actual[i] = 0
+        if actual[i] < 1:
+            actual[i] = 1
     wind_s = rnd.normal(12, 4.3, size)
     for i in range(size): wind_s[i] = round(wind_s[i], 1)
     wind_d = rnd.normal(280, 130, size)
@@ -123,5 +123,6 @@ def update_json():
 grand = pd.read_json('~/Documents/Code/BestBeach/backend/GreatBigData1.json')
 pd.set_option('display.max_rows', None)
 print(grand[["Beach", "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Actual"]])
+# using this to view the list (for editing)
 # this_day = [4, 80, 1.3, 275, 8, 1]  # "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide"
 # print(best_list(this_day))

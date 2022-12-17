@@ -87,18 +87,6 @@ def rate_for_current(today: list, beach: str, main_data: pd.DataFrame):
             df.drop(x, inplace=True)
     X = df[["Wind Qual", "Swell Hgt", "Swell Dir", "Swell Prd"]]
     y = df["Actual"]
-    """
-    plt.scatter(df["Wind Sp"], y)
-    plt.show()
-    plt.scatter(df["Wind Dir"], y)
-    plt.show()
-    plt.scatter(df["Swell Hgt"], y)
-    plt.show()
-    plt.scatter(df["Swell Dir"], y)
-    plt.show()
-    plt.scatter(df["Swell Prd"], y)
-    plt.show()
-    """
     regress = linear_model.LinearRegression()
     regress.fit(X.values, y)
     today = [today[0:-1:]]
@@ -132,7 +120,8 @@ def update_json():
 
 
 # update_json()
-grand = pd.read_json('~/Documents/Code/BestBeach/backend/GreatBigData.json')
-print(grand)
-this_day = [4, 80, 1.3, 275, 8, 1]  # "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide"
-print(best_list(this_day))
+grand = pd.read_json('~/Documents/Code/BestBeach/backend/GreatBigData1.json')
+pd.set_option('display.max_rows', None)
+print(grand[["Beach", "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Actual"]])
+# this_day = [4, 80, 1.3, 275, 8, 1]  # "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide"
+# print(best_list(this_day))

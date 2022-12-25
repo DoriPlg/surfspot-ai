@@ -48,10 +48,21 @@ async function updateUser(req, res) {
         res.status(500).send({ err: 'Failed to update user' })
     }
 }
+async function addBeach(req, res) {
+    try {
+        const beach = req.body
+        const savedBeach = await userService.add(beach)
+        res.send(savedBeach)
+    } catch (err) {
+        logger.error('Failed to update user', err)
+        res.status(500).send({ err: 'Failed to update user' })
+    }
+}
 
 module.exports = {
     getUser,
     getUsers,
     deleteUser,
-    updateUser
+    updateUser,
+    addBeach
 }

@@ -1,4 +1,4 @@
 module.exports = {
-  'dbURL': 'localhost:27020/mydatabase',
+  'dbURL': 'localhost:27017',
 }
 

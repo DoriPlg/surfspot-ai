@@ -15,7 +15,7 @@ module.exports = {
 async function query(filterBy = {}) {
     const criteria = _buildCriteria(filterBy)
     try {
-        const collection = await dbService.getCollection('user')
+        const collection = await dbService.getCollection('beaches')
         var users = await collection.find(criteria).toArray()
         users = users.map(user => {
             delete user.password
@@ -84,29 +84,21 @@ async function update(user) {
 // fullname: null,
 // facebookUserId: null,
 // facebookImg: null
-async function add(user) {
+async function add(beach) {
     try {
-        let userToAdd = {
-            username: user.username,
-            fullname: user.fullname,
-            password: user.password,
-            likedTracks: [],
-            likedStations: [],
-            recentlyPlayedStations: [],
-            recentlyPlayedSongs: [],
-            userPref: user.userPref,
-            following : []
+        let beachToAdd = {
+            name: beach.name,
+            thumbnail_url: beach.thumbnail_url,
+            description: beach.description,
+            location: beach.location
         }
-        if (user.facebookUserId) {
-            userToAdd.facebookUserId = user.facebookUserId
-            userToAdd.img = user.img
-        }
-        const collection = await dbService.getCollection('user')
-        let userExists = await getByUsername(userToAdd.username)
-        if (!userExists) {
-            await collection.insertOne(userToAdd)
-        }
-        return userToAdd
+        const collection = await dbService.getCollection('beaches')
+        // let userExists = await getByUsername(userToAdd.username)
+        // if (!userExists) {
+        await collection.insertOne(beachToAdd)
+        // }
+        console.log('here ma');
+        return beachToAdd
 
     } catch (err) {
         logger.error('cannot insert user', err)

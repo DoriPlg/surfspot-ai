@@ -1,0 +1,27 @@
+[
+  {
+        "name":"marina",
+        "thumbnail_url":"",
+        "description": "closed beach",
+        "location": "herzliya",
+        "lat": 32.165804,
+        "long": 34.797245
+    },
+    {
+        "name":"sidni ali",
+        "thumbnail_url":"",
+        "description":"cliff beach",
+        "location":"herzliya",
+        "lat":32.188324,
+        "long":34.804551
+    },
+    {
+        "name":"9 beach",
+        "thumbnail_url":"",
+        "description":"open beach",
+        "location":"herzliya",
+        "lat":32.174731,
+        "long":34.800668
+    }
+
+]

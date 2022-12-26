@@ -49,8 +49,12 @@
     &.justify-center {
         justify-content: center;
     }
-
+    
     &.align-center {
+        align-items: center;
+    }
+    &.center {
+        justify-content: center;
         align-items: center;
     }
 }

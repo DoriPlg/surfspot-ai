@@ -36,7 +36,7 @@ const setupAsyncLocalStorage = require('./middlewares/setupAls.middleware')
 app.all('*', setupAsyncLocalStorage)
 
 app.use('/api/auth', authRoutes)
-app.use('/api/user', userRoutes)
+app.use('/api/beach', userRoutes)
 connectSockets(http, session)
 
 // Make every server-side-route to match the index.html

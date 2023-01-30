@@ -1,5 +1,10 @@
-fruits = ['apple', 'banana', 'cherry']
+import pymongo
 
-fruits.insert(0, "orange")
+client = pymongo.MongoClient("mongodb://localhost:27018/")
+db = client["my_db"]
+collection = db['bestbeaches']
 
-print(fruits)
+docs = collection.find({})
+for doc in docs:
+    print(doc)
+

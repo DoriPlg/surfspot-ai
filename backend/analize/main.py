@@ -1,13 +1,12 @@
 import pandas as pd
-# import matplotlib.pyplot as plt
 import numpy.random as rnd
 from sklearn import linear_model
-# import numpy
 import copy
+import pymongo
 pd.set_option('display.max_columns', None)
 
 
-beach_names = ["Pirza", "Marina main", "Marina bath", "Marina open", "Gazibo", "9Beach", "Sidni Ali", "Gaash"]
+beach_names = ["Marina main", "Gazibo", "9Beach", "Sidni Ali"]
 
 
 # returns number representing wind direction in relation to shore
@@ -108,21 +107,28 @@ def best_list(conditions: list):
                 a += 1
             cond_list.insert(a, [i, x])
         except:
-            cond_list.append([a, x])
+            cond_list.append([i, x])
     return cond_list
 
 
 # creates a json file to use as the data source (fictive)
 def update_json():
-    grand = make_table(500)
-    grand.to_json(r'~/Documents/Code/BestBeach/backend/GreatBigData.json')
+    grand = make_table(100)
+    grand.to_json(r'~/Documents/Code/BestBeach/backend/analize/GreatBigData.json')
     print("Done")
 
 
 # update_json()
-grand = pd.read_json('~/Documents/Code/BestBeach/backend/GreatBigData1.json')
+client = pymongo.MongoClient("mongodb+srv://DoriP:"+input("What's your password, DoriP?")+"@cluster0.loj5c73.mongodb.net/?retryWrites=true&w=majority")
+db = client["my_db"]
+collection = db['wave_days']
+jdict = {}
+docs = collection.find({})
+for doc in docs:
+    jdict.update(doc)
+grand = pd.DataFrame(jdict)
 pd.set_option('display.max_rows', None)
-print(grand[["Beach", "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Actual"]])
+# print(grand[["Beach", "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Actual"]])
 # using this to view the list (for editing)
-# this_day = [4, 80, 1.3, 275, 8, 1]  # "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide"
-# print(best_list(this_day))
+this_day = [4, 80, 1.3, 275, 8, 1]  # "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide"
+print(best_list(this_day))

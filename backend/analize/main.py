@@ -3,7 +3,10 @@ import numpy.random as rnd
 from sklearn import linear_model
 import copy
 import pymongo
+from fastapi import FastAPI
 
+
+app = FastAPI()
 pd.set_option('display.max_columns', None)
 
 
@@ -119,7 +122,6 @@ def update_json():
     print("Done")
 
 
-# update_json()
 cl_name = input("Who wants access?")
 client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"? ")+"@cluster0.loj5c73.mongodb.net/?retryWrites=true&w=majority")
 db = client["my_db"]
@@ -130,7 +132,10 @@ for doc in docs:
     jdict.update(doc)
 grand = pd.DataFrame(jdict)
 pd.set_option('display.max_rows', None)
-# print(grand[["Beach", "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Actual"]])
-# using this to view the list (for editing)
-this_day = [4, 80, 1.3, 275, 8, 1]  # "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide"
-print(best_list(this_day))
+
+@app.get("/numcrunch")
+def sendlist():
+    # print(grand[["Beach", "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Actual"]])
+    # using this to view the list (for editing)
+    this_day = [4, 80, 1.3, 275, 8, 1]  # "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide"
+    return best_list(this_day)

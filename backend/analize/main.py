@@ -119,7 +119,8 @@ def update_json():
 
 
 # update_json()
-client = pymongo.MongoClient("mongodb+srv://DoriP:"+input("What's your password, DoriP?")+"@cluster0.loj5c73.mongodb.net/?retryWrites=true&w=majority")
+cl_name = input("Who wants access?")
+client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"?")+"@cluster0.loj5c73.mongodb.net/?retryWrites=true&w=majority")
 db = client["my_db"]
 collection = db['wave_days']
 jdict = {}

@@ -7,4 +7,3 @@ export function Loading() {
         </div>
     )
 }
-//TEMP by dori

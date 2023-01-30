@@ -3,6 +3,7 @@ import numpy.random as rnd
 from sklearn import linear_model
 import copy
 import pymongo
+
 pd.set_option('display.max_columns', None)
 
 
@@ -120,7 +121,7 @@ def update_json():
 
 # update_json()
 cl_name = input("Who wants access?")
-client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"?")+"@cluster0.loj5c73.mongodb.net/?retryWrites=true&w=majority")
+client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"? ")+"@cluster0.loj5c73.mongodb.net/?retryWrites=true&w=majority")
 db = client["my_db"]
 collection = db['wave_days']
 jdict = {}

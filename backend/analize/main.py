@@ -5,6 +5,7 @@ import copy
 import pymongo
 from fastapi import FastAPI
 import conditions
+from datetime import datetime, timezone
 
 
 app = FastAPI()
@@ -135,8 +136,8 @@ grand = pd.DataFrame(jdict)
 pd.set_option('display.max_rows', None)
 
 @app.get("/numcrunch")
-def sendlist():
+def sendlist(check_for = datetime.now(timezone.utc)):
     # print(grand[["Beach", "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Actual"]])
     # using this to view the list (for editing)
     # this_day = [4, 80, 1.3, 275, 8, 1]  #  "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide"
-    return best_list(conditions.day_list())
+    return best_list(conditions.day_list(check_for))

@@ -119,7 +119,7 @@ def best_list(conditions: list):
 # creates a json file to use as the data source (fictive)
 def update_json():
     grand = make_table(100)
-    grand.to_json(r'~/Documents/Code/BestBeach/backend/analize/GreatBigData.json')
+    grand.to_json(r'~/Documents/Code/BestBeach/backend/analize/keys and data/GreatBigData.json')
     print("Done")
 
 

@@ -71,8 +71,7 @@ def get_tide(timed = datetime.now(timezone.utc)):
     min_delta = 7*3600
     ref = None
     for i in d_tide:
-        for char in ["S","M","T","W","F"]:i["time"] = i["time"].replace(char," ")
-        duration = datetime.strptime(i["time"],'%Y-%m-%d %H:%M:%S%z')-timed
+        duration = datetime.strptime(i["time"],'%Y-%m-%dT%H:%M:%S%z')-timed
         delta = abs(duration.total_seconds())
         if delta<min_delta:
             ref = i["time"]

@@ -1,8 +1,6 @@
-import json
 import requests
 from datetime import datetime, timezone, timedelta
 import pandas as pd
-import numpy
 
 # gets the marine data from the StormGlass.io API
 def pull_data(timed = datetime.now(timezone.utc)):

@@ -1,12 +1,11 @@
 import json
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import pandas as pd
 import numpy
 
-
 # gets the marine data from the StormGlass.io API
-def pull_data(timed = timezone.now(timezone.utc)):
+def pull_data(timed = datetime.now(timezone.utc)):
     response = requests.get(
     'https://api.stormglass.io/v2/weather/point',
     params={
@@ -55,7 +54,39 @@ def sea_dict(timed = datetime.now(timezone.utc)):
 
 # gets the trinary tidal situation
 def get_tide(timed = datetime.now(timezone.utc)):
-    return 1
+    """
+    start = timed - timedelta(0, 0, 0, 0, 12.5, 6, 0)
+    stop = timed +  timedelta(0, 0, 0, 0, 12.5, 6, 0)
+    response = requests.get(
+    'https://api.stormglass.io/v2/tide/extremes/point',
+    params={
+        'lat': 32.1761,
+        'lng': 34.7984,
+        'start': start,  # Convert to UTC timestamp
+        'end': stop,  # Convert to UTC timestam
+    },
+    headers={
+        'Authorization': 'fc493268-a161-11ed-b59d-0242ac130002-fc49334e-a161-11ed-b59d-0242ac130002'
+    }
+    )
+    """
+    print(timed)
+    d_tide = [{'height': 0.012778267802382953, 'time': '2023-01-31T06:04:00+00:00', 'type': 'high'}, {'height': -0.0261013218364069, 'time': '2023-01-31T10:43:00+00:00', 'type': 'low'}, {'height': 0.08379443397049985, 'time': '2023-01-31T17:25:00+00:00', 'type': 'high'}]  # response.json()["data"]
+    min_delta = 7*3600
+    ref = None
+    for i in d_tide:
+        for char in ["S","M","T","W","F"]:i["time"] = i["time"].replace(char," ")
+        duration = datetime.strptime(i["time"],'%Y-%m-%d %H:%M:%S%z')-timed
+        delta = abs(duration.total_seconds())
+        if delta<min_delta:
+            ref = i["time"]
+            if i["type"] == 'high': dir = 1
+            elif i["type"] == 'low': dir = -1
+            min_delta = delta
+    duration = datetime.strptime(ref,'%Y-%m-%d %H:%M:%S%z')-timed
+    if 90 < abs(divmod(duration.total_seconds(), 60)[0]) < 282:
+        return 0
+    return dir
 
 
 # returns "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide" for chosen time
@@ -63,3 +94,4 @@ def day_list(timed = datetime.now(timezone.utc)):
     templ = sea_dict(timed)
     the_list = [templ["windSpeed"], templ["windDirection"], templ["swellHeight"], templ["swellDirection"], templ["swellPeriod"], get_tide(timed)]
     return the_list
+

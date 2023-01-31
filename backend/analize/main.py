@@ -138,5 +138,5 @@ pd.set_option('display.max_rows', None)
 def sendlist():
     # print(grand[["Beach", "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Actual"]])
     # using this to view the list (for editing)
-    this_day = [4, 80, 1.3, 275, 8, 1]  # = conditions.day_list() # "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide"
-    return best_list(this_day)
+    # this_day = [4, 80, 1.3, 275, 8, 1]  #  "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide"
+    return best_list(conditions.day_list())

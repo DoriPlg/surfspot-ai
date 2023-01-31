@@ -1,0 +1,17 @@
+[
+    {
+        _id:id,
+        # beach_id:beach
+        # rating:1-5
+        #date
+        #time
+        *wind_speed: 1-100kph
+        *wind_dir:deg 
+        *swell_height: m'
+        *swell_direction: deg 
+        *swell_period: seconds
+        *tide_height
+    }
+]
+//* - from api
+//#-from user

@@ -35,7 +35,7 @@ const { connectSockets } = require('./services/socket.service')
 const setupAsyncLocalStorage = require('./middlewares/setupAls.middleware')
 app.all('*', setupAsyncLocalStorage)
 
-app.use('/api/auth', authRoutes)
+// app.use('/api/auth', authRoutes)
 app.use('/api/beach', beachRoutes)
 connectSockets(http, session)
 

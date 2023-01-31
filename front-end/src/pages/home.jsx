@@ -31,7 +31,7 @@ class _Home extends Component {
                 </div>
                 <div className="wall">
                     <BeachPreview beaches={beaches} />
-
+                    <iframe src="http://localhost:8000/numcrunch" title="Pull from main"> </iframe>
                 </div>
             </section>
         )

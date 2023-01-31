@@ -27,8 +27,8 @@ if (process.env.NODE_ENV === 'production') {
     app.use(cors(corsOptions))
 }
 
-const authRoutes = require('./api/auth/auth.routes')
-const userRoutes = require('./api/user/user.routes')
+// const authRoutes = require('./api/auth/auth.routes')
+const beachRoutes = require('./api/beach/beach.routes')
 const { connectSockets } = require('./services/socket.service')
 
 // routes
@@ -36,7 +36,7 @@ const setupAsyncLocalStorage = require('./middlewares/setupAls.middleware')
 app.all('*', setupAsyncLocalStorage)
 
 app.use('/api/auth', authRoutes)
-app.use('/api/beach', userRoutes)
+app.use('/api/beach', beachRoutes)
 connectSockets(http, session)
 
 // Make every server-side-route to match the index.html

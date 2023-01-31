@@ -85,7 +85,7 @@ def rate_for_current(today: list, beach: str, main_data: pd.DataFrame):
     for x in df.index:
         if df.loc[x, "Tide"] != today[-1]:
             df.drop(x, inplace=True)
-    print(df)
+    # print(df)
     for x in df.index:
         if df.loc[x, "Beach"] != beach:
             df.drop(x, inplace=True)
@@ -94,7 +94,7 @@ def rate_for_current(today: list, beach: str, main_data: pd.DataFrame):
     regress = linear_model.LinearRegression()
     regress.fit(X.values, y)
     today = [today[0:-1:]]
-    print(df)
+    # print(df)
     return regress.predict(today)
 
 
@@ -105,7 +105,7 @@ def best_list(conditions: list):
     global beach_names
     for i in beach_names:
         x = rate_for_current(conditions, i, grand)[0]
-        print(x)
+        # print(x)
         a = 0
         try:
             while x < cond_list[a][1]:

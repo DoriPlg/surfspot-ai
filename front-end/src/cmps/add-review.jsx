@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { weatherApiService } from '../services/weatherAPI.service'
 import { loadBeaches } from '../store/actions/beach.actions';
 
+
+// component of a form to add a review
 class _AddReview extends React.Component {
     state = {
         review: {

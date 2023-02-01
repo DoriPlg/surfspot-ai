@@ -39,7 +39,7 @@ def sea_dict(timed = datetime.now(timezone.utc)):
     }}
     df = pd.DataFrame(x["hours"][0])   # REMEMBER TO SWITCH THESE^"""
     df = pd.DataFrame(pull_data()["hours"][0])
-    df.to_json(r'~/Documents/Code/BestBeach/backend/analize/sea_data.json')
+    df.to_json(r'~/Documents/Code/BestBeach/backend/analize/keys and data/sea_data.json')
     mean_val = {}
     columns = list(df)
     for col in columns:
@@ -76,7 +76,7 @@ def get_tide(timed = datetime.now(timezone.utc)):
             if i["type"] == 'high': dir = 1
             elif i["type"] == 'low': dir = -1
             min_delta = delta
-    duration = datetime.strptime(ref,'%Y-%m-%d %H:%M:%S%z')-timed
+    duration = datetime.strptime(ref,'%Y-%m-%dT%H:%M:%S%z')-timed
     if 90 < abs(divmod(duration.total_seconds(), 60)[0]) < 282:
         return 0
     return dir

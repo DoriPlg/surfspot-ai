@@ -4,6 +4,7 @@ const params = 'windDirection,windSpeed,swellHeight,swellDirection,swellPeriod';
 const KEY = '8c27fa22-389a-11ec-b37c-0242ac130002-8c27fa90-389a-11ec-b37c-0242ac130002';
 
 async function getConditions(location,date,time) {
+  //gets data from stormglass.io to set conditions in  the review
   const timeInUtc=convertDateToUTC(date,time)
   return timeInUtc
   try {

@@ -2,94 +2,81 @@
     "hours": [
         {
             "swellDirection": {
-                "dwd": 300.17,
-                "icon": 303.82,
-                "noaa": 280.14,
-                "sg": 303.82
+                "dwd": 299.42,
+                "icon": 296.53,
+                "noaa": 296.28,
+                "sg": 296.53
             },
             "swellHeight": {
-                "dwd": 1.16,
-                "icon": 1.1,
-                "noaa": 1.28,
-                "sg": 1.1
+                "dwd": 2.76,
+                "icon": 2.83,
+                "noaa": 3.13,
+                "sg": 2.83
             },
             "swellPeriod": {
-                "dwd": 9.1,
-                "icon": 8.82,
-                "noaa": 6.61,
-                "sg": 8.82
+                "dwd": 9.06,
+                "icon": 9.18,
+                "noaa": 9.83,
+                "sg": 9.18
             },
-            "time": "2023-02-01T12:00:00+00:00",
-            "waveHeight": {
-                "dwd": 3.59,
-                "icon": 3.55,
-                "noaa": 3.52,
-                "sg": 3.55
-            },
+            "time": "2023-02-02T10:00:00+00:00",
             "windDirection": {
-                "icon": 234.5,
-                "noaa": 232.31,
-                "sg": 234.5
+                "icon": 284.35,
+                "noaa": 281.0,
+                "sg": 284.35
             },
             "windSpeed": {
-                "icon": 16.62,
-                "noaa": 13.46,
-                "sg": 16.62
+                "icon": 7.81,
+                "noaa": 7.04,
+                "sg": 7.81
             }
         },
         {
             "swellDirection": {
-                "dwd": 298.56,
-                "icon": 292.04,
-                "noaa": 280.79,
-                "sg": 292.04
+                "dwd": 299.75,
+                "icon": 297.2,
+                "noaa": 297.35,
+                "sg": 297.2
             },
             "swellHeight": {
-                "dwd": 1.28,
-                "icon": 1.22,
-                "noaa": 1.22,
-                "sg": 1.22
+                "dwd": 2.68,
+                "icon": 2.73,
+                "noaa": 3.03,
+                "sg": 2.73
             },
             "swellPeriod": {
-                "dwd": 9.57,
-                "icon": 9.0,
-                "noaa": 6.59,
-                "sg": 9.0
+                "dwd": 8.91,
+                "icon": 9.18,
+                "noaa": 9.69,
+                "sg": 9.18
             },
-            "time": "2023-02-01T13:00:00+00:00",
-            "waveHeight": {
-                "dwd": 3.73,
-                "icon": 3.63,
-                "noaa": 3.6,
-                "sg": 3.63
-            },
+            "time": "2023-02-02T11:00:00+00:00",
             "windDirection": {
-                "icon": 244.92,
-                "noaa": 243.76,
-                "sg": 244.92
+                "icon": 286.44,
+                "noaa": 275.04,
+                "sg": 286.44
             },
             "windSpeed": {
-                "icon": 15.46,
-                "noaa": 12.19,
-                "sg": 15.46
+                "icon": 8.06,
+                "noaa": 6.94,
+                "sg": 8.06
             }
         }
     ],
     "meta": {
         "cost": 1,
         "dailyQuota": 50,
-        "end": "2023-02-01 13:00",
-        "lat": 32.05,
-        "lng": 34.753,
+        "end": "2023-02-02 11:05",
+        "lat": 32.165804,
+        "lng": 34.797245,
         "params": [
-            "waveHeight",
             "windDirection",
             "windSpeed",
             "swellHeight",
             "swellDirection",
             "swellPeriod"
         ],
-        "requestCount": 6,
-        "start": "2023-02-01 12:00"
+        "requestCount": 2,
+        "start": "2023-02-02 10:00"
     }
 }

@@ -9,20 +9,12 @@ async function getConditions(location, date, time) {
   let timeOfEnd = new Date(timeOfStart[0], parseInt(timeOfStart[1]) - 1, timeOfStart[2], timeOfStart[3], parseInt(timeOfStart[4]) + 1).toISOString()
   timeOfStart = new Date(timeOfStart[0], parseInt(timeOfStart[1]) - 1, timeOfStart[2], timeOfStart[3], timeOfStart[4]).toISOString()
   try {
-    // const res = await axios.get(`https://api.stormglass.io/v2/weather/point?start=${timeOfStart}&end=${timeOfEnd}&lat=${location.lat}&lng=${location.long}&params=${params}`, {
-    //   headers: {
-    //     'Authorization': KEY
-    //   }
-    // })
-      let conditions= {
-        "windSpeed":8.51,
-        "windDirection":274.46,
-        "swellHeight":1.83,
-        "swellDirection":269.85,
-        "swellPeriod":7.51,
-        "tide":-1
-        }
-        return conditions
+    const res = await axios.get(`https://api.stormglass.io/v2/weather/point?start=${timeOfStart}&end=${timeOfEnd}&lat=${location.lat}&lng=${location.long}&params=${params}`, {
+      headers: {
+        'Authorization': KEY
+      }
+    })
+    return res.data
   }
   catch (err) {
     console.log('Cannwot reach server:', err);

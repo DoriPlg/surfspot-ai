@@ -2,6 +2,8 @@ import requests
 from datetime import datetime, timezone, timedelta
 import pandas as pd
 
+key = "ca2bd50e-a14a-11ed-a138-0242ac130002-ca2bd572-a14a-11ed-a138-0242ac130002"
+
 # gets the marine data from the StormGlass.io API
 def pull_data(timed = datetime.now(timezone.utc)):
     response = requests.get(
@@ -14,7 +16,7 @@ def pull_data(timed = datetime.now(timezone.utc)):
         'end':  timed
     },
     headers={
-        'Authorization': 'fc493268-a161-11ed-b59d-0242ac130002-fc49334e-a161-11ed-b59d-0242ac130002'
+        'Authorization': key
     }
     )
     return response.json()
@@ -22,7 +24,8 @@ def pull_data(timed = datetime.now(timezone.utc)):
 
 # makes a dictionary of the desired sea conditions
 def sea_dict(timed = datetime.now(timezone.utc)):
-    """x = {'hours': 
+    #"""
+    x = {'hours': 
     [{
         'swellDirection': {'dwd': 271.02, 'icon': 268.68, 'noaa': 283.05, 'sg': 268.68}, 
         'swellHeight': {'dwd': 1.98, 'icon': 1.83, 'noaa': 0.35, 'sg': 1.83}, 
@@ -37,8 +40,9 @@ def sea_dict(timed = datetime.now(timezone.utc)):
         'params': ['windSpeed', 'windDirection', 'swellHeight', 'swellDirection', 'swellPeriod'], 
         'requestCount': 10, 'start': '2023-01-31 10:00'
     }}
-    df = pd.DataFrame(x["hours"][0])   # REMEMBER TO SWITCH THESE^"""
-    df = pd.DataFrame(pull_data()["hours"][0])
+    df = pd.DataFrame(x["hours"][0])   # REMEMBER TO SWITCH THESE^
+    #"""
+    #df = pd.DataFrame(pull_data()["hours"][0])
     df.to_json(r'~/Documents/Code/BestBeach/backend/analize/keys and data/sea_data.json')
     mean_val = {}
     columns = list(df)
@@ -51,6 +55,7 @@ def sea_dict(timed = datetime.now(timezone.utc)):
 
 # gets the trinary tidal situation
 def get_tide(timed = datetime.now(timezone.utc)):
+    """
     start = timed - timedelta(0, 0, 0, 0, 12.5, 6, 0)
     stop = timed +  timedelta(0, 0, 0, 0, 12.5, 6, 0)
     response = requests.get(
@@ -62,10 +67,11 @@ def get_tide(timed = datetime.now(timezone.utc)):
         'end': stop,  # Convert to UTC timestam
     },
     headers={
-        'Authorization': 'fc493268-a161-11ed-b59d-0242ac130002-fc49334e-a161-11ed-b59d-0242ac130002'
+        'Authorization': key
     }
     )
-    d_tide = response.json()["data"]  # [{'height': 0.012778267802382953, 'time': '2023-01-31T06:04:00+00:00', 'type': 'high'}, {'height': -0.0261013218364069, 'time': '2023-01-31T10:43:00+00:00', 'type': 'low'}, {'height': 0.08379443397049985, 'time': '2023-01-31T17:25:00+00:00', 'type': 'high'}]  # 
+    """
+    d_tide =  [{'height': 0.012778267802382953, 'time': '2023-01-31T06:04:00+00:00', 'type': 'high'}, {'height': -0.0261013218364069, 'time': '2023-01-31T10:43:00+00:00', 'type': 'low'}, {'height': 0.08379443397049985, 'time': '2023-01-31T17:25:00+00:00', 'type': 'high'}]  # response.json()["data"]  #
     min_delta = 7*3600
     ref = None
     for i in d_tide:
@@ -84,7 +90,7 @@ def get_tide(timed = datetime.now(timezone.utc)):
 
 # returns "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide" for chosen time
 def day_list(timed = datetime.now(timezone.utc)):
-    templ = sea_dict(timed)  
+    templ = sea_dict(timed)
     the_list = [templ["windSpeed"], templ["windDirection"], templ["swellHeight"], templ["swellDirection"], templ["swellPeriod"], get_tide(timed)]
     return the_list
 

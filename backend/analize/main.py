@@ -5,7 +5,7 @@ import copy
 import pymongo
 from fastapi import FastAPI
 import conditions
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 
 app = FastAPI()
@@ -124,7 +124,7 @@ def update_json():
     print("Done")
 
 
-cl_name = input("Who wants access?")
+cl_name = "DoriP"
 client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"? ")+"@cluster0.loj5c73.mongodb.net/?retryWrites=true&w=majority")
 db = client["my_db"]
 collection = db['wave_days']
@@ -136,6 +136,7 @@ grand = pd.DataFrame(jdict)
 pd.set_option('display.max_rows', None)
 
 @app.get("/numcrunch")
-def sendlist(check_for = datetime.now(timezone.utc)):
+def sendlist(check_for = datetime.now(timezone.utc) - timedelta(2)):
     this_day = conditions.day_list(check_for)
-    return {"conditions": this_day, "beachList": best_list(this_day)}
+    result = {"conditions": {"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]}, "beachList": best_list(this_day)}
+    return result

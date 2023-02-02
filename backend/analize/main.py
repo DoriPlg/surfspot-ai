@@ -136,7 +136,13 @@ grand = pd.DataFrame(jdict)
 pd.set_option('display.max_rows', None)
 
 @app.get("/numcrunch")
-def sendlist(check_for = datetime.now(timezone.utc) - timedelta(2)):
+def sendlist(check_for = datetime.now(timezone.utc)):
     this_day = conditions.day_list(check_for)
     result = {"conditions": {"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]}, "beachList": best_list(this_day)}
     return result
+
+
+@app.get("/conditions")
+def cond_time(check_for = datetime.now(timezone.utc)):
+    this_day = conditions.day_list(check_for)
+    return {"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]}

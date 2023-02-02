@@ -24,7 +24,7 @@ def pull_data(timed = datetime.now(timezone.utc)):
 
 # makes a dictionary of the desired sea conditions
 def sea_dict(timed = datetime.now(timezone.utc)):
-    #"""
+    """
     x = {'hours': 
     [{
         'swellDirection': {'dwd': 271.02, 'icon': 268.68, 'noaa': 283.05, 'sg': 268.68}, 
@@ -41,8 +41,8 @@ def sea_dict(timed = datetime.now(timezone.utc)):
         'requestCount': 10, 'start': '2023-01-31 10:00'
     }}
     df = pd.DataFrame(x["hours"][0])   # REMEMBER TO SWITCH THESE^
-    #"""
-    #df = pd.DataFrame(pull_data()["hours"][0])
+    """
+    df = pd.DataFrame(pull_data()["hours"][0])
     df.to_json(r'~/Documents/Code/BestBeach/backend/analize/keys and data/sea_data.json')
     mean_val = {}
     columns = list(df)
@@ -55,7 +55,7 @@ def sea_dict(timed = datetime.now(timezone.utc)):
 
 # gets the trinary tidal situation
 def get_tide(timed = datetime.now(timezone.utc)):
-    """
+    #"""
     start = timed - timedelta(0, 0, 0, 0, 12.5, 6, 0)
     stop = timed +  timedelta(0, 0, 0, 0, 12.5, 6, 0)
     response = requests.get(
@@ -70,8 +70,8 @@ def get_tide(timed = datetime.now(timezone.utc)):
         'Authorization': key
     }
     )
-    """
-    d_tide =  [{'height': 0.012778267802382953, 'time': '2023-01-31T06:04:00+00:00', 'type': 'high'}, {'height': -0.0261013218364069, 'time': '2023-01-31T10:43:00+00:00', 'type': 'low'}, {'height': 0.08379443397049985, 'time': '2023-01-31T17:25:00+00:00', 'type': 'high'}]  # response.json()["data"]  #
+    #"""
+    d_tide = response.json()["data"]  #  [{'height': 0.012778267802382953, 'time': '2023-01-31T06:04:00+00:00', 'type': 'high'}, {'height': -0.0261013218364069, 'time': '2023-01-31T10:43:00+00:00', 'type': 'low'}, {'height': 0.08379443397049985, 'time': '2023-01-31T17:25:00+00:00', 'type': 'high'}]  # 
     min_delta = 7*3600
     ref = None
     for i in d_tide:

@@ -1,3 +1,4 @@
-# https://www.robotstxt.org/robotstxt.html
-User-agent: *
-Disallow:
+ checklist 
+ create a review aand push it to the data base 
+ create a page that present the best beaches after getting a time and date 
+ create sections in the backend 

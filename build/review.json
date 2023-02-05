@@ -1,0 +1,13 @@
+{
+    "beachName": "Sidni Ali",
+    "time": "2023-02-02T10:00:00+00:00",
+    "rating": 5.5,
+    "conditions": {
+        "windSpeed": 8.51,
+        "windDirection": 274.46,
+        "swellHeight": 1.83,
+        "swellDirection": 269.85,
+        "swellPeriod": 7.51,
+        "tide": -1
+    }
+}

@@ -33,9 +33,8 @@ class _AddReview extends React.Component {
     }
 
     onAddReview = (ev) => {
-        console.log(this.state);
         const { date, time } = this.state.review
-        console.log(weatherApiService.getConditions({ lat: 32.165804, long: 34.797245 },date,time))
+        let conditions = weatherApiService.getConditions({ lat: 32.165804, long: 34.797245 },date,time)
         
     }
 

@@ -146,9 +146,9 @@ def update_json():
 def grand_mongo():
     global grand
     cl_name = "DoriP"
-    client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"? ")+"@cluster0.loj5c73.mongodb.net/?retryWrites=true&w=majority")
-    db = client["my_db"]
-    collection = db['wave_days']
+    client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"? ")+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
+    db = client["Reviews"]
+    collection = db["Sharon Beaches"]
     jdict = {}
     docs = collection.find({})
     for doc in docs:
@@ -163,6 +163,7 @@ def grand_json():
 
 
 grand_mongo()
+
 
 @app.get("/numcrunch")
 def sendlist(check_for = datetime.now(timezone.utc)):

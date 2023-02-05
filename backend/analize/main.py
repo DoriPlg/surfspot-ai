@@ -9,7 +9,7 @@ from datetime import datetime, timezone, timedelta
 
 
 app = FastAPI()
-pd.set_option('display.max_columns', None)
+# pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 
@@ -179,4 +179,3 @@ def cond_time(check_for = datetime.now(timezone.utc)):
 @app.get("/which_beaches")
 def beaches():
     return get_beaches()
-    

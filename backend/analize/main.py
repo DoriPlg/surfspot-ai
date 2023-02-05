@@ -103,11 +103,21 @@ def rate_for_current(today: list, beach: str, main_data: pd.DataFrame):
         else: return "An unknown error occurred"
 
 
+# returns the names of the beaches currently in the DataFrame
+def get_beaches(df: pd.DataFrame):
+    beach_list = df["Beach"].tolist()
+    beach_set = {}
+    for i in beach_list: beach_set.add(i)
+    beach_list = []
+    for a in beach_set: beach_list.append(a)
+    return beach_list
+
+
 # returns sorted list of beaches and their rating
 def best_list(conditions: list):
     cond_list = []
     conditions.insert(0, conditions.pop(0)*wind_dir(conditions.pop(0)))
-    global beach_names
+    beach_names = get_beaches(grand)
     for i in beach_names:
         x = rate_for_current(conditions, i, grand)
         if type(x) == str: 

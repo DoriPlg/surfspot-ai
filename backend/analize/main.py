@@ -10,6 +10,7 @@ from datetime import datetime, timezone, timedelta
 
 app = FastAPI()
 pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
 
 
 beach_names = ["Marina main", "Gazibo", "9Beach", "Sidni Ali"]
@@ -141,18 +142,27 @@ def update_json():
     print("Done")
 
 
-cl_name = "DoriP"
-client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"? ")+"@cluster0.loj5c73.mongodb.net/?retryWrites=true&w=majority")
-db = client["my_db"]
-collection = db['wave_days']
-jdict = {}
-docs = collection.find({})
-for doc in docs:
-    jdict.update(doc)
-grand = pd.DataFrame(jdict)
-"""
-grand = pd.read_json('/home/dori/Documents/Code/BestBeach/backend/analize/keys and data/GreatBigData.json')"""
-pd.set_option('display.max_rows', None)
+# assign dataframe from MongoDB
+def grand_mongo():
+    global grand
+    cl_name = "DoriP"
+    client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"? ")+"@cluster0.loj5c73.mongodb.net/?retryWrites=true&w=majority")
+    db = client["my_db"]
+    collection = db['wave_days']
+    jdict = {}
+    docs = collection.find({})
+    for doc in docs:
+        jdict.update(doc)
+    grand = pd.DataFrame(jdict)
+
+
+#assign dataframe from local json file (for testing)
+def grand_json():
+    global grand
+    grand = pd.read_json('/home/dori/Documents/Code/BestBeach/backend/analize/keys and data/GreatBigData.json')
+
+
+grand_mongo()
 
 @app.get("/numcrunch")
 def sendlist(check_for = datetime.now(timezone.utc)):

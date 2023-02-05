@@ -13,8 +13,6 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 
-beach_names = ["Marina main", "Gazibo", "9Beach", "Sidni Ali"]
-
 
 # returns number representing wind direction in relation to shore
 # it is possible to add finer tuning!
@@ -34,7 +32,8 @@ def wind_dir(deg):
 
 
 # creates random data table, to work with. NO CORRELATION TO REALITY
-def make_table(size=300):
+def make_table(size=100):
+    beach_names = ["Marina main", "Gazibo", "9Beach", "Sidni Ali"]
     beach = []
     wind_q = []
     for i in range(size):
@@ -97,7 +96,6 @@ def rate_for_current(today: list, beach: str, main_data: pd.DataFrame):
         regress = linear_model.LinearRegression()
         regress.fit(X.values, y)
         today = [today[0:-1:]]
-        # print(df)
         return regress.predict(today)[0]
     except:
         if len(df.index) < 3: return "Not enough data to calculate"
@@ -176,3 +174,9 @@ def sendlist(check_for = datetime.now(timezone.utc)):
 def cond_time(check_for = datetime.now(timezone.utc)):
     this_day = conditions.day_list(check_for)
     return {"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]}
+
+
+@app.get("/which_beaches")
+def beaches():
+    return get_beaches()
+    

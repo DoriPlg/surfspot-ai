@@ -92,11 +92,15 @@ def rate_for_current(today: list, beach: str, main_data: pd.DataFrame):
             df.drop(x, inplace=True)
     X = df[["Wind Qual", "Swell Hgt", "Swell Dir", "Swell Prd"]]
     y = df["Actual"]
-    regress = linear_model.LinearRegression()
-    regress.fit(X.values, y)
-    today = [today[0:-1:]]
-    # print(df)
-    return regress.predict(today)
+    try:
+        regress = linear_model.LinearRegression()
+        regress.fit(X.values, y)
+        today = [today[0:-1:]]
+        # print(df)
+        return regress.predict(today)[0]
+    except:
+        if len(df.index) < 3: return "Not enough data to calculate"
+        else: return "An unknown error occurred"
 
 
 # returns sorted list of beaches and their rating
@@ -105,7 +109,10 @@ def best_list(conditions: list):
     conditions.insert(0, conditions.pop(0)*wind_dir(conditions.pop(0)))
     global beach_names
     for i in beach_names:
-        x = rate_for_current(conditions, i, grand)[0]
+        x = rate_for_current(conditions, i, grand)
+        if type(x) == str: 
+            print("For", i,'-', x)
+            continue
         # print(x)
         a = 0
         try:
@@ -133,6 +140,8 @@ docs = collection.find({})
 for doc in docs:
     jdict.update(doc)
 grand = pd.DataFrame(jdict)
+"""
+grand = pd.read_json('/home/dori/Documents/Code/BestBeach/backend/analize/keys and data/GreatBigData.json')"""
 pd.set_option('display.max_rows', None)
 
 @app.get("/numcrunch")

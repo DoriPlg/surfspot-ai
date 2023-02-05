@@ -163,15 +163,23 @@ def grand_json():
 grand_mongo()
 
 
-@app.get("/numcrunch")
+@app.get("/numcrunch/{check_for}")
 def sendlist(check_for = datetime.now(timezone.utc)):
+    if check_for == "NOW": check_for = datetime.now(timezone.utc)
+    elif type(check_for) == str: 
+        check_for = datetime.strptime(check_for,'%Y-%m-%d %H:%M') - timedelta(0, 0, 0, 0, 0, 2, 0)
+        check_for = check_for.replace(tzinfo=timezone.utc)
     this_day = conditions.day_list(check_for)
     result = {"conditions": {"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]}, "beachList": best_list(this_day)}
     return result
 
 
-@app.get("/conditions")
+@app.get("/conditions/{check_for}")
 def cond_time(check_for = datetime.now(timezone.utc)):
+    if check_for == "NOW": check_for = datetime.now(timezone.utc)
+    elif type(check_for) == str: 
+        check_for = datetime.strptime(check_for,'%Y-%m-%d %H:%M') - timedelta(0, 0, 0, 0, 0, 2, 0)
+        check_for = check_for.replace(tzinfo=timezone.utc)
     this_day = conditions.day_list(check_for)
     return {"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]}
 

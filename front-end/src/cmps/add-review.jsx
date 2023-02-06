@@ -45,7 +45,7 @@ class _AddReview extends React.Component {
         //    "Tide": conditions["Tide"],
         //    "Rating": rating
         //}
-        //MongoClient.connect("mongodb+srv://DoriP:123stinkyQ@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority", function(err, db) {
+        //MongoClient.connect("mongodb+srv://DoriP:<password>@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority", function(err, db) {
         //    if (err) throw err;
         //    var dbo = db.db("Reviews");
         //    dbo.collection("From Web").insertOne(rateInsert, function(err, res) {

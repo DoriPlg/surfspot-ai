@@ -21,11 +21,11 @@ async function getConditions(location, date, time) {
         "swellDirection":269.85,
         "swellPeriod":7.51,
         "tide":-1
-        }
-        return conditions
+      };
+      return conditions;
   }
   catch (err) {
-    console.log('Cannwot reach server:', err);
+    console.log('Cannot reach server:', err);
   }
 }
 

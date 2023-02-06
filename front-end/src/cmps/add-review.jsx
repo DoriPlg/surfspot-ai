@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { weatherApiService } from '../services/weatherAPI.service'
 import { loadBeaches } from '../store/actions/beach.actions';
-var MongoClient = require('mongodb').MongoClient; // Part of what Dori did
+
 
 
 // component of a form to add a review
@@ -34,26 +34,8 @@ class _AddReview extends React.Component {
     }
 
     onAddReview = (ev) => {
-        const { date, time, rating } = this.state.review
+        const { date, time, rating, beachName } = this.state.review
         let conditions = weatherApiService.getConditions({ lat: 32.165804, long: 34.797245 },date,time)
-        //let rateInsert = {
-        //    "Wind Sp": conditions["windSpeed"],
-        //    "Wind Dir": conditions["windDirection"], 
-        //    "Swell Hgt": conditions["swellHeight"], 
-        //    "Swell Dir": conditions["swellDirection"], 
-        //    "Swell Prd": conditions["swellPeriod"], 
-        //    "Tide": conditions["Tide"],
-        //    "Rating": rating
-        //}
-        //MongoClient.connect("mongodb+srv://DoriP:<password>@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority", function(err, db) {
-        //    if (err) throw err;
-        //    var dbo = db.db("Reviews");
-        //    dbo.collection("From Web").insertOne(rateInsert, function(err, res) {
-        //      if (err) throw err;
-        //      console.log("1 document inserted");
-        //      db.close();
-        //    });
-        //});
     }
 
 

@@ -19,6 +19,9 @@ def pull_data(timed = datetime.now(timezone.utc)):
         'Authorization': key
     }
     )
+    f = open("/home/dori/Documents/Code/BestBeach/backend/analize/keys and data/pulls.txt", "a")
+    f.write(str(response.json()))
+    f.close()
     return response.json()
 
 

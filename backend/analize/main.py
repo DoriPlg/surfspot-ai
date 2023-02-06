@@ -105,7 +105,7 @@ def rate_for_current(today: list, beach: str, main_data: pd.DataFrame):
 # returns the names of the beaches currently in the DataFrame
 def get_beaches(df: pd.DataFrame):
     beach_list = df["Beach"].tolist()
-    beach_set = {}
+    beach_set = set()
     for i in beach_list: beach_set.add(i)
     beach_list = []
     for a in beach_set: beach_list.append(a)

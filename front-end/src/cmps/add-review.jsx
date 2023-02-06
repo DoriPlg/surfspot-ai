@@ -53,7 +53,7 @@ class _AddReview extends React.Component {
         //      console.log("1 document inserted");
         //      db.close();
         //    });
-        //  });
+        //});
     }
 
 

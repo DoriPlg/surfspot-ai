@@ -106,9 +106,9 @@ def rate_for_current(today: list, beach: str, main_data: pd.DataFrame):
 def get_beaches(df: pd.DataFrame):
     beach_list = df["Beach"].tolist()
     beach_set = set()
-    for i in beach_list: beach_set.add(i)
+    for beach in beach_list: beach_set.add(beach)
     beach_list = []
-    for a in beach_set: beach_list.append(a)
+    for beach in beach_set: beach_list.append(beach)
     return beach_list
 
 
@@ -153,6 +153,7 @@ def grand_mongo():
     grand = pd.DataFrame(jdict)
 
 
+# assign dataframe from review MongoDB
 def grand_reviews():
     global grand
     cl_name = "DoriP"
@@ -165,6 +166,7 @@ def grand_reviews():
         jdict.append(doc)
     grand = pd.DataFrame(jdict)
 
+
 # creates a json file to use as the data source (fictive)
 def update_json():
     grand = make_table(100)
@@ -172,7 +174,7 @@ def update_json():
     print("Done")
 
 
-#assign dataframe from local json file (for testing)
+# assign dataframe from local json file (for testing)
 def grand_json():
     global grand
     grand = pd.read_json('/home/dori/Documents/Code/BestBeach/backend/analize/keys and data/GreatBigData.json')

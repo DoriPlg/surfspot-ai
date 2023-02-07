@@ -178,6 +178,7 @@ def grand_json():
     grand = pd.read_json('/home/dori/Documents/Code/BestBeach/backend/analize/keys and data/GreatBigData.json')
 
 
+# returns calculated list of beaches for a given date-time string - formatted YYYY-MM-DD%20HH:mm
 @app.get("/numcrunch/#/{check_for}")
 def sendlist(check_for = datetime.now(timezone.utc)):
     grand_mongo()
@@ -188,6 +189,7 @@ def sendlist(check_for = datetime.now(timezone.utc)):
     return result
 
 
+# returns conditions for a given date-time string - formatted YYYY-MM-DD%20HH:mm
 @app.get("/conditions/#/{check_for}")
 def cond_time(check_for = datetime.now(timezone.utc)):
     grand_mongo()
@@ -197,6 +199,7 @@ def cond_time(check_for = datetime.now(timezone.utc)):
     return {"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]}
 
 
+# adds a review to the database - time formatted YYYY-MM-DD%20HH:mm
 @app.get("/addrev/datetime={dateTime}&beach={beach}&rate={rate}")
 def new_review(dateTime, beach, rate):
     try:
@@ -222,6 +225,7 @@ def new_review(dateTime, beach, rate):
     return "Successfuly uploaded"
 
 
+#returns the beaches currently in the database
 @app.get("/which_beaches")
 def beaches():
     grand_mongo()

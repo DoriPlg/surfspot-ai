@@ -20,3 +20,6 @@
 02/02/2023, 12:28:52 - INFO - Server is running on port: 3030 
 02/02/2023, 12:33:25 - INFO - Server is running on port: 3030 
 07/02/2023, 14:26:44 - INFO - Server is running on port: 3030 
+07/02/2023, 17:00:04 - INFO - Server is running on port: 3030 
+07/02/2023, 17:00:42 - ERROR - cannot find users | ReferenceError: logger is not defined (sid: 6IQAJmmYtoUIeYEwz1O3LSpHqrvkHDtI)
+07/02/2023, 17:00:42 - ERROR - Failed to get beaches | ReferenceError: logger is not defined (sid: 6IQAJmmYtoUIeYEwz1O3LSpHqrvkHDtI)

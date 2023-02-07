@@ -6,11 +6,23 @@ import pymongo
 from fastapi import FastAPI
 import conditions
 from datetime import datetime, timezone, timedelta
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+
+
 
 
 app = FastAPI()
 # pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 
@@ -143,7 +155,8 @@ def makeIsrTime(timeString: str):
 def grand_mongo():
     global grand
     cl_name = "DoriP"
-    client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"? ")+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
+    passw = "123321stinkyQ" #input("What's your password, "+cl_name+"? ")
+    client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+passw+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
     db = client["Reviews"]
     collection = db["Sharon Beaches"]
     jdict = {}
@@ -187,8 +200,7 @@ def sendlist(check_for = datetime.now(timezone.utc)):
     if check_for == "NOW": check_for = datetime.now(timezone.utc)
     elif type(check_for) == str: check_for = makeIsrTime(check_for)
     this_day = conditions.day_list(check_for)
-    result = {"conditions": {"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]}, "beachList": best_list(this_day)}
-    return result
+    return JSONResponse(content={"conditions": {"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]}, "beachList": best_list(this_day)})
 
 
 # returns conditions for a given date-time string - formatted YYYY-MM-DD%20HH:mm
@@ -198,7 +210,7 @@ def cond_time(check_for = datetime.now(timezone.utc)):
     if check_for == "NOW": check_for = datetime.now(timezone.utc)
     elif type(check_for) == str: check_for = makeIsrTime(check_for)
     this_day = conditions.day_list(check_for)
-    return {"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]}
+    return JSONResponse(content={"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]})
 
 
 # adds a review to the database - time formatted YYYY-MM-DD%20HH:mm
@@ -210,9 +222,9 @@ def new_review(dateTime, beach, rate):
         db = client["Reviews"]
         collection = db["From Web"]
     except:
-        return "Error connecting to server"
+        return JSONResponse(content={"Response":"Error connecting to server"})
     try: row = conditions.day_list(makeIsrTime(dateTime))
-    except: return "Error handling time"
+    except: return JSONResponse(content={"Response":"Error handling time"})
     day_dic = {
         "Beach": beach,
         "Tide":row[5],
@@ -224,11 +236,11 @@ def new_review(dateTime, beach, rate):
         "Swell Prd": row[4],
         "Actual": rate}
     collection.insert_one(day_dic)
-    return "Successfuly uploaded"
+    return JSONResponse(content={"Response":"Successfuly uploaded"})
 
 
 #returns the beaches currently in the database
 @app.get("/which_beaches")
 def beaches():
     grand_mongo()
-    return get_beaches(grand)
+    return JSONResponse(content={"Beaches":get_beaches(grand)})

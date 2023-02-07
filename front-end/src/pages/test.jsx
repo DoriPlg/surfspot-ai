@@ -1,19 +1,16 @@
-import { BeachPreview } from "../cmps/beach-preview";
-import { Loading } from "../cmps/loading";
-import hero from "../assets/img/hero.jpg";
 import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { loadBeaches } from '../store/actions/beach.actions';
-import { AddReview } from "../cmps/add-review";
+import { testService } from '../services/testApi.js';
 import axios from "axios";
-// import { stationServiceNew } from '../services/station.service.js';
 
 class _Test extends Component {
     state = {
+        beaches:[]
     }
 
     async componentDidMount() {
-        // await this.props.loadBeaches();
+        const beaches = await testService.query();
+        this.setState({beaches})
     }
 
     // async componentDidUpdate(prevProps) {
@@ -22,17 +19,21 @@ class _Test extends Component {
 
 
     render() {
-        var beaches = "test failed"
-        axios
-            .get("http://127.0.0.1:8000/which_beaches",{
-                crossDomain: true
-            })
-            .then(function (response) {
-                beaches = response.data;
-            });
+        // var beaches = "test failed"
+        // axios
+        //     .get("http://127.0.0.1:8000/which_beaches",{
+        //         crossDomain: true
+        //     })
+        //     .then(function (response) {
+        //         beaches = response.data;
+        //     });
+        const {beaches} =this.state
+        if (!beaches.length) return 'Loading...'
         return (
            <div>
-            <h1 id="content">{beaches}</h1>
+            {beaches.map((beach)=>{
+                return <h1>{beach.name}</h1>
+            })}
            </div>
         )
     }

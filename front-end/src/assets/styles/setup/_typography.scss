@@ -61,9 +61,15 @@
 .fas {
   font-family: fas;
 }
+.far {
+  font-family: far;
+}
 
 .fa-home::before {
   content: '\f015';
+}
+.fa-copyrights::before {
+  content: '\f1f9';
 }
 
 .fa-search::before {

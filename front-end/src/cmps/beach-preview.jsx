@@ -3,14 +3,13 @@ import { Link } from 'react-router-dom';
 
 export function BeachPreview({ beaches }) {
     return (
-        <div className="beaches flex center">
+        <div className="beaches flex column align-center">
             {beaches.map((beach, idx) => {
-                return (<Link to={`/beach/${beach.name}`} className="beach-container flex column align-center" key={idx}>
-                    <div className='img-container flex justify-center'>
-                        <img src={beach.thumbnail_url.length ? beach.thumbnail_url : beachImg} />
+                return (<Link to={`/beach/${beach.name}`} className={beach.name + ' beach-container flex column'} key={idx}>
+                    <div className="beach-details flex column align-center justify-center">
+                        <h4>{beach.name}</h4>
+                        <p>{beach.description}</p>
                     </div>
-                    <h4>{beach.name}</h4>
-                    <p>{beach.description}</p>
                 </Link >
                 )
             })}

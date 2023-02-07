@@ -1,16 +1,49 @@
-.hero {
-    background-image: url("../../img/hero.jpg");
-    width: 100%;
-    height: 55vh;
-    background-position-y: -86px;
-    background-size: cover;
-    background-repeat: no-repeat;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    h1{
-        font-size: 7rem;
+.home {
+    .hero {
+        background-image: url("../../img/hero.jpg");
+        width: 100%;
+        height: 55vh;
+        background-position-y: -86px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        justify-content: space-around;
+        align-items: center;
+        text-align: center;
+
+        .welcome {
+            font-family: 'Quicksand-Light';
+            font-style: italic;
+        }
+
+        h1 {
+            font-size: 4rem;
+        }
+
+        .findBtn {
+            height: 10vh;
+            width: 50vw;
+            border-radius: 15px;
+            background-color: #fff;
+            font-size: 2rem;
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 9px 2px;
+        }
+
+        .findBtn:active {
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 0px;
+        }
+    }
+
+    .info {
+        padding-top: 2vh;
+        padding-inline: 1rem;
+    }
+
+    .beaches-in-area {
+        padding-top: 4vh;
+        margin-inline: 1rem;
+    }
+
+    h2 {
+        text-align: center;
     }
 }

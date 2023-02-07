@@ -12,7 +12,7 @@ class _Home extends Component {
     }
 
     async componentDidMount() {
-        // await this.props.loadBeaches();
+        await this.props.loadBeaches();
     }
 
     // async componentDidUpdate(prevProps) {
@@ -21,19 +21,29 @@ class _Home extends Component {
 
 
     render() {
-        // let { beaches } = this.props
-        // if (!beaches) return <Loading />
+        let { beaches } = this.props
+        if (!beaches) return <Loading />
         return (
             <section className="home">
-                <div className="hero">
+                <div className="hero flex column">
+                    <div className="flex  column align-center justify-center">
+                    <h4 className="welcome">Welcome to:</h4>
                     <h1>BestBeach</h1>
                     <h4>Find the right beach for you</h4>
-                    <div className='findbtn'>Find</div>
+                    </div>
+                    <div className="flex align-center justify-center">
+                    <div className='findBtn flex align-center justify-center'>Find</div>
+                    </div>
                 </div>
-                <div className="wall">
-                    {/* <BeachPreview beaches={beaches} /> */}
-                    <AddReview/>
-                    {/* <iframe src="http://localhost:8000/numcrunch" title="Pull from main"> </iframe> */}
+                <div className="info">
+                    <h2>About the app:</h2>
+                    <h4>We found a way to caculate the best beach to the conditions.</h4>
+                    <h4>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquam delectus excepturi dolor aut minima animi cum</h4>
+                    <h4> beatae dolorum possimus provident nulla, quia culpa quidem laborum tempora architecto soluta! Magni, modi!</h4>
+                </div>
+                <div className="beaches-in-area flex column">
+                    <h2>Main beaches in your area:</h2>
+                    <BeachPreview  beaches={beaches}/>
                 </div>
             </section>
         )

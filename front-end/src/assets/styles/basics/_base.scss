@@ -3,19 +3,19 @@
 }
 
 html {
-    color: black;
+    color: #0A2647;
     line-height: 1.4;
     height: 100%;
 }
 
 body {
     height: 100%;
-    background: radial-gradient(ellipse at center, rgba(255, 254, 234, 1) 0%, rgba(255, 254, 234, 1) 35%, #b7e8eb 100%);
+    background: white;
     max-height: 100vh;
     width: 100%;
-    font-family: "Quicksand-Light";
+    font-family: "roboto";
     margin: 0;
-    overflow: hidden;
+    overflow: scroll;
 }
 
 main {

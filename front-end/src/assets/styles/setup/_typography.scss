@@ -61,13 +61,25 @@
 .fas {
   font-family: fas;
 }
+.far {
+  font-family: far;
+}
 
 .fa-home::before {
   content: '\f015';
 }
+.fa-copyrights::before {
+  content: '\f1f9';
+}
 
 .fa-search::before {
   content: '\f002';
+}
+.fa-bars::before {
+  content: '\f0c9';
+}
+.fa-xmark::before {
+  content: '\f00d';
 }
 
 .fa-library::before {

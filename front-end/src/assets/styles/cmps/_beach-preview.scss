@@ -1,11 +1,37 @@
-.beaches{
-    height: 150px;
-    width: 100;
-    img{
-        object-fit: contain;
-        height: 100px;
+.beaches {
+    gap: 5vh;
+    text-align: center;
+    .beach-container {
+        height : 80vw;
+        width: 80vw;
+        border-radius: 15px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        border: 1px solid rgb(24, 24, 24);
+        justify-content: end;
+        &.sidni {
+            background-image: url("../../img/sidni\ ali.jpg");
+        }
+
+        &.beach {
+            background-image: url("../../img/9\ beach.jpg");
+        }
+
+        &.marina {
+            background-image: url("../../img/marina.jpg");
+        }
+
+        &.test {
+            background-image: url("../../img/beach.jpg");
+        }
+        .beach-details{
+            background-color: #fff;
+            opacity: 0.5;
+            height: 30%;
+        }
     }
-    a{
+
+    a {
         font-size: 2rem;
     }
 

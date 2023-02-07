@@ -11,7 +11,7 @@ class _Test extends Component {
 
     async componentDidMount() {
         let beaches = await testService.query();
-        beaches = beaches.beaches;
+        beaches = beaches.Beaches;
         this.setState({beaches})
     }
 
@@ -30,7 +30,6 @@ class _Test extends Component {
         //         beaches = response.data;
         //     });
         const {beaches} =this.state
-        console.log(beaches)
         console.log(typeof(beaches))
         if (!beaches.length) return 'Loading...'
         return (

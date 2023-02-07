@@ -2,6 +2,7 @@ import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { testService } from '../services/testApi.js';
 import axios from "axios";
+import { type } from 'os';
 
 class _Test extends Component {
     state = {
@@ -28,7 +29,9 @@ class _Test extends Component {
         //         beaches = response.data;
         //     });
         const {beaches} =this.state
-        if (!beaches.length) return 'Loading...'
+        const beachList = beaches["Beaches"]
+        console.log(beachList)
+        if (!beachList.length) return 'Loading...'
         return (
            <div>
             {beaches.map((beach)=>{

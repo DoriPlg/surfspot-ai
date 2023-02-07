@@ -1,7 +1,7 @@
 import Axios from 'axios'
 
 const axios = Axios.create({
-    withCredentials: true
+    withCredentials: false
 });
 const BASE_URL = (process.env.NODE_ENV === 'production')
     ? '/which_beaches'

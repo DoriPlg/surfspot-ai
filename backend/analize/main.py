@@ -114,15 +114,15 @@ def get_beaches(df: pd.DataFrame):
 
 # returns sorted list of beaches and their rating
 def best_list(conditions: list):
+    beach_names = []
     cond_list = []
     conditions.insert(0, conditions.pop(0)*wind_dir(conditions.pop(0)))
-    beach_names = get_beaches(grand)
+    if len(beach_names) == 0: beach_names = get_beaches(grand)
     for i in beach_names:
         x = rate_for_current(conditions, i, grand)
         if type(x) == str: 
             print("For", i,'-', x)
             continue
-        # print(x)
         a = 0
         try:
             while x < cond_list[a][1]:

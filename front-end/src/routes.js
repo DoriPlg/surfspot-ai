@@ -3,17 +3,17 @@
 //import {CarApp} from './pages/car-app.jsx'
 
 import { Home } from "./pages/home";
-// import { StationDetails } from "./pages/station-details";
+import { Test } from "./pages/test";
 
 const routes = [
     {
         path:'/',
         component: <Home/>,
+    },
+    {
+       path:'/test',
+       component: <Test/>,
     }
-    // {
-    //    path:'/station/:stationId',
-    //    component: StationDetails,
-    // }
     //{
     //    path:'/about',
     //    component: AboutUs,

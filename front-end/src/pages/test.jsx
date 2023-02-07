@@ -10,7 +10,8 @@ class _Test extends Component {
     }
 
     async componentDidMount() {
-        const beaches = await testService.query();
+        let beaches = await testService.query();
+        beaches = beaches.beaches;
         this.setState({beaches})
     }
 
@@ -29,13 +30,12 @@ class _Test extends Component {
         //         beaches = response.data;
         //     });
         const {beaches} =this.state
-        const beachList = beaches["Beaches"]
         console.log(beachList)
-        if (!beachList.length) return 'Loading...'
+        if (!beaches.length) return 'Loading...'
         return (
            <div>
             {beaches.map((beach)=>{
-                return <h1>{beach.name}</h1>
+                return <h1>{beach}</h1>
             })}
            </div>
         )

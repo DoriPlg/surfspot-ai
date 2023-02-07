@@ -133,6 +133,12 @@ def best_list(conditions: list):
     return cond_list
 
 
+def makeIsrTime(timeString: str):
+    timeString = datetime.strptime(timeString, "%Y-%m-%d %H:%M")- timedelta(0, 0, 0, 0, 0, 2, 0)
+    timeString = timeString.replace(tzinfo=timezone.utc)
+    return timeString
+
+
 # assign dataframe from MongoDB
 def grand_mongo():
     global grand
@@ -147,6 +153,18 @@ def grand_mongo():
     grand = pd.DataFrame(jdict)
 
 
+def grand_reviews():
+    global grand
+    cl_name = "DoriP"
+    client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"? ")+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
+    db = client["Reviews"]
+    collection = db["From Web"]
+    jdict = []
+    docs = collection.find({})
+    for doc in docs:
+        jdict.append(doc)
+    grand = pd.DataFrame(jdict)
+
 # creates a json file to use as the data source (fictive)
 def update_json():
     grand = make_table(100)
@@ -154,17 +172,10 @@ def update_json():
     print("Done")
 
 
-def makeIsrTime(timeString: str):
-    timeString = datetime.strptime(timeString, "%Y-%m-%d %H:%M")- timedelta(0, 0, 0, 0, 0, 2, 0)
-    timeString = timeString.replace(tzinfo=timezone.utc)
-    return timeString
-
-
 #assign dataframe from local json file (for testing)
 def grand_json():
     global grand
     grand = pd.read_json('/home/dori/Documents/Code/BestBeach/backend/analize/keys and data/GreatBigData.json')
-
 
 
 @app.get("/numcrunch/#/{check_for}")
@@ -213,4 +224,5 @@ def new_review(dateTime, beach, rate):
 
 @app.get("/which_beaches")
 def beaches():
-    return get_beaches()
+    grand_mongo()
+    return get_beaches(grand)

@@ -49,7 +49,6 @@ function mapStateToProps(state) {
     }
 }
 const mapDispatchToProps = {
-    loadBeaches
 }
 
 

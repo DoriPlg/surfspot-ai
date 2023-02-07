@@ -155,7 +155,7 @@ def makeIsrTime(timeString: str):
 def grand_mongo():
     global grand
     cl_name = "DoriP"
-    passw = "123321stinkyQ" #input("What's your password, "+cl_name+"? ")
+    passw = input("What's your password, "+cl_name+"? ")
     client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+passw+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
     db = client["Reviews"]
     collection = db["Sharon Beaches"]

@@ -114,15 +114,15 @@ def get_beaches(df: pd.DataFrame):
 
 # returns sorted list of beaches and their rating
 def best_list(conditions: list):
+    beach_names = []
     cond_list = []
     conditions.insert(0, conditions.pop(0)*wind_dir(conditions.pop(0)))
-    beach_names = get_beaches(grand)
+    if len(beach_names) == 0: beach_names = get_beaches(grand)
     for i in beach_names:
         x = rate_for_current(conditions, i, grand)
         if type(x) == str: 
             print("For", i,'-', x)
             continue
-        # print(x)
         a = 0
         try:
             while x < cond_list[a][1]:
@@ -133,11 +133,10 @@ def best_list(conditions: list):
     return cond_list
 
 
-# creates a json file to use as the data source (fictive)
-def update_json():
-    grand = make_table(100)
-    grand.to_json(r'~/Documents/Code/BestBeach/backend/analize/keys and data/GreatBigData.json')
-    print("Done")
+def makeIsrTime(timeString: str):
+    timeString = datetime.strptime(timeString, "%Y-%m-%d %H:%M")- timedelta(0, 0, 0, 0, 0, 2, 0)
+    timeString = timeString.replace(tzinfo=timezone.utc)
+    return timeString
 
 
 # assign dataframe from MongoDB
@@ -154,10 +153,23 @@ def grand_mongo():
     grand = pd.DataFrame(jdict)
 
 
-def makeIsrTime(timeString: str):
-    timeString = datetime.strptime(timeString, "%Y-%m-%d%20%H:%M")- timedelta(0, 0, 0, 0, 0, 2, 0)
-    timeString = timeString.replace(tzinfo=timezone.utc)
-    return timeString
+def grand_reviews():
+    global grand
+    cl_name = "DoriP"
+    client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"? ")+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
+    db = client["Reviews"]
+    collection = db["From Web"]
+    jdict = []
+    docs = collection.find({})
+    for doc in docs:
+        jdict.append(doc)
+    grand = pd.DataFrame(jdict)
+
+# creates a json file to use as the data source (fictive)
+def update_json():
+    grand = make_table(100)
+    grand.to_json(r'~/Documents/Code/BestBeach/backend/analize/keys and data/GreatBigData.json')
+    print("Done")
 
 
 #assign dataframe from local json file (for testing)
@@ -166,11 +178,10 @@ def grand_json():
     grand = pd.read_json('/home/dori/Documents/Code/BestBeach/backend/analize/keys and data/GreatBigData.json')
 
 
-grand_mongo()
-
-
+# returns calculated list of beaches for a given date-time string - formatted YYYY-MM-DD%20HH:mm
 @app.get("/numcrunch/#/{check_for}")
 def sendlist(check_for = datetime.now(timezone.utc)):
+    grand_mongo()
     if check_for == "NOW": check_for = datetime.now(timezone.utc)
     elif type(check_for) == str: check_for = makeIsrTime(check_for)
     this_day = conditions.day_list(check_for)
@@ -178,28 +189,44 @@ def sendlist(check_for = datetime.now(timezone.utc)):
     return result
 
 
+# returns conditions for a given date-time string - formatted YYYY-MM-DD%20HH:mm
 @app.get("/conditions/#/{check_for}")
 def cond_time(check_for = datetime.now(timezone.utc)):
+    grand_mongo()
     if check_for == "NOW": check_for = datetime.now(timezone.utc)
     elif type(check_for) == str: check_for = makeIsrTime(check_for)
     this_day = conditions.day_list(check_for)
     return {"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]}
 
 
-@app.get("/addrev/#/datetime={dateTime}&beach={beach}&rate={rate}")
+# adds a review to the database - time formatted YYYY-MM-DD%20HH:mm
+@app.get("/addrev/datetime={dateTime}&beach={beach}&rate={rate}")
 def new_review(dateTime, beach, rate):
-    cl_name = "DoriP"
-    client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"? ")+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
-    print("~~~~~~")
-    db = client["Reviews"]
-    collection = db["From Web"]
-    row = conditions.day_list(makeIsrTime(dateTime))
-    row["Beach"] = beach
-    row["Actual"] = rate
-    collection.insert_one(row)
-    print("BAMM")
+    try:
+        cl_name = "DoriP"
+        client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"? ")+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
+        db = client["Reviews"]
+        collection = db["From Web"]
+    except:
+        return "Error connecting to server"
+    try: row = conditions.day_list(makeIsrTime(dateTime))
+    except: return "Error handling time"
+    day_dic = {
+        "Beach": beach,
+        "Tide":row[5],
+        "Wind Sp": row[0],
+        "Wind Dir": row[1],
+        "Wind Qual": wind_dir(row[1])*row[0],
+        "Swell Hgt": row[2],
+        "Swell Dir": row[3],
+        "Swell Prd": row[4],
+        "Actual": rate}
+    collection.insert_one(day_dic)
+    return "Successfuly uploaded"
 
 
+#returns the beaches currently in the database
 @app.get("/which_beaches")
 def beaches():
-    return get_beaches()
+    grand_mongo()
+    return get_beaches(grand)

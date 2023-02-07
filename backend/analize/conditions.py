@@ -45,7 +45,7 @@ def sea_dict(timed = datetime.now(timezone.utc)):
     }}
     df = pd.DataFrame(x["hours"][0])   # REMEMBER TO SWITCH THESE^
     """
-    df = pd.DataFrame(pull_data()["hours"][0])
+    df = pd.DataFrame(pull_data(timed)["hours"][0])
     df.to_json(r'~/Documents/Code/BestBeach/backend/analize/keys and data/sea_data.json')
     mean_val = {}
     columns = list(df)
@@ -73,20 +73,19 @@ def get_tide(timed = datetime.now(timezone.utc)):
         'Authorization': key
     }
     )
+    d_tide = response.json()["data"]
     #"""
-    d_tide = response.json()["data"]  #  [{'height': 0.012778267802382953, 'time': '2023-01-31T06:04:00+00:00', 'type': 'high'}, {'height': -0.0261013218364069, 'time': '2023-01-31T10:43:00+00:00', 'type': 'low'}, {'height': 0.08379443397049985, 'time': '2023-01-31T17:25:00+00:00', 'type': 'high'}]  # 
+    # d_tide = [{'height': 0.012778267802382953, 'time': '2023-02-07T06:04:00+00:00', 'type': 'high'}, {'height': -0.0261013218364069, 'time': '2023-02-07T10:43:00+00:00', 'type': 'low'}, {'height': 0.08379443397049985, 'time': '2023-02-07T17:25:00+00:00', 'type': 'high'}]  
     min_delta = 7*3600
     ref = None
     for i in d_tide:
         duration = datetime.strptime(i["time"],'%Y-%m-%dT%H:%M:%S%z')-timed
         delta = abs(duration.total_seconds())
         if delta<min_delta:
-            ref = i["time"]
             if i["type"] == 'high': dir = 1
             elif i["type"] == 'low': dir = -1
             min_delta = delta
-    duration = datetime.strptime(ref,'%Y-%m-%dT%H:%M:%S%z')-timed
-    if 90 < abs(divmod(duration.total_seconds(), 60)[0]) < 282:
+    if 90 < abs(divmod(min_delta, 60)[0]) < 282:
         return 0
     return dir
 

@@ -2,7 +2,7 @@ import requests
 from datetime import datetime, timezone, timedelta
 import pandas as pd
 
-key = "fc493268-a161-11ed-b59d-0242ac130002-fc49334e-a161-11ed-b59d-0242ac130002"
+key = "ca2bd50e-a14a-11ed-a138-0242ac130002-ca2bd572-a14a-11ed-a138-0242ac130002"
 
 # gets the marine data from the StormGlass.io API
 def pull_data(timed = datetime.now(timezone.utc)):

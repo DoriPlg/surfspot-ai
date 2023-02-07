@@ -30,7 +30,6 @@ class _Test extends Component {
         //         beaches = response.data;
         //     });
         const {beaches} =this.state
-        console.log(typeof(beaches))
         if (!beaches.length) return 'Loading...'
         return (
            <div>

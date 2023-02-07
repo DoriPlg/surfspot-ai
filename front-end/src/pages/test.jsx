@@ -29,6 +29,7 @@ class _Test extends Component {
             })
             .then(function (response) {
                 beaches = response.data;
+                console.log(beaches)
             });
         return (
            <div>

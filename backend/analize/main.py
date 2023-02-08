@@ -9,8 +9,7 @@ from datetime import datetime, timezone, timedelta
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-
-
+import json
 
 
 app = FastAPI()
@@ -154,11 +153,12 @@ def makeIsrTime(timeString: str):
 # assign dataframe from MongoDB
 def grand_mongo():
     global grand
-    cl_name = "DoriP"
-    passw = input("What's your password, "+cl_name+"? ")
-    client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+passw+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
-    db = client["Reviews"]
-    collection = db["Sharon Beaches"]
+    try:
+        client = pymongo.MongoClient("mongodb+srv://"+loadKeys()['user']+":"+loadKeys()["password"]+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
+        db = client["Reviews"]
+        collection = db["Sharon Beaches"]
+    except:
+        raise SystemError("Trouble connecting to server")
     jdict = {}
     docs = collection.find({})
     for doc in docs:
@@ -169,10 +169,12 @@ def grand_mongo():
 # assign dataframe from review MongoDB
 def grand_reviews():
     global grand
-    cl_name = "DoriP"
-    client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"? ")+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
-    db = client["Reviews"]
-    collection = db["From Web"]
+    try:
+        client = pymongo.MongoClient("mongodb+srv://"+loadKeys()['user']+":"+loadKeys()["password"]+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
+        db = client["Reviews"]
+        collection = db["From Web"]
+    except:
+        raise SystemError("Trouble connecting to server")
     jdict = []
     docs = collection.find({})
     for doc in docs:
@@ -191,6 +193,12 @@ def update_json():
 def grand_json():
     global grand
     grand = pd.read_json('/home/dori/Documents/Code/BestBeach/backend/analize/keys and data/GreatBigData.json')
+
+
+def loadKeys():
+    f = open("/home/dori/Documents/Code/keysForMongo.json")
+    data = json.load(f)
+    return(data)
 
 
 # returns calculated list of beaches for a given date-time string - formatted YYYY-MM-DD%20HH:mm
@@ -217,8 +225,7 @@ def cond_time(check_for = datetime.now(timezone.utc)):
 @app.get("/addrev/datetime={dateTime}&beach={beach}&rate={rate}")
 def new_review(dateTime, beach, rate):
     try:
-        cl_name = "DoriP"
-        client = pymongo.MongoClient("mongodb+srv://"+cl_name+":"+input("What's your password, "+cl_name+"? ")+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
+        client = pymongo.MongoClient("mongodb+srv://"+loadKeys()['user']+":"+loadKeys()["password"]+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
         db = client["Reviews"]
         collection = db["From Web"]
     except:
@@ -244,3 +251,5 @@ def new_review(dateTime, beach, rate):
 def beaches():
     grand_mongo()
     return JSONResponse(content={"Beaches":get_beaches(grand)})
+
+

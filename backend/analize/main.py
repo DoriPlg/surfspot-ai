@@ -251,5 +251,3 @@ def new_review(dateTime, beach, rate):
 def beaches():
     grand_mongo()
     return JSONResponse(content={"Beaches":get_beaches(grand)})
-
-

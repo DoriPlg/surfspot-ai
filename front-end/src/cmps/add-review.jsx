@@ -39,11 +39,11 @@ class _AddReview extends Component {
     handleChangeRating = (ev, newValue) => {
         this.setState((prevState) => ({ ...prevState, rating: newValue }))
     }
-    onAddReview = (ev) => {
+    onAddReview = async (ev) => {
         let { dateTime, rating, beachName } = this.state
         dateTime=dayjs(dateTime).toISOString()
-        console.log(dateTime)
-        let conditions = weatherApiService.getConditions({ lat: 32.165804, long: 34.797245 }, dateTime)
+        let conditions = await weatherApiService.getConditions({ lat: 32.165804, long: 34.797245 }, dateTime)
+        console.log(conditions)
     }
 
 

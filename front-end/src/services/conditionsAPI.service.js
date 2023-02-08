@@ -1,15 +1,15 @@
-import { convertDateToUTC } from './utilService'
 import axios from 'axios'
 const params = 'windDirection,windSpeed,swellHeight,swellDirection,swellPeriod';
 const KEY = '8c27fa22-389a-11ec-b37c-0242ac130002-8c27fa90-389a-11ec-b37c-0242ac130002';
 
-async function getConditions(location, date, time) {
+async function getConditions(location, dateTime) {
   //gets data from stormglass.io to set conditions in  the review
-  let timeOfStart = date.split("-").concat(time.split(":"))
-  let timeOfEnd = new Date(timeOfStart[0], parseInt(timeOfStart[1]) - 1, timeOfStart[2], timeOfStart[3], parseInt(timeOfStart[4]) + 1).toISOString()
-  timeOfStart = new Date(timeOfStart[0], parseInt(timeOfStart[1]) - 1, timeOfStart[2], timeOfStart[3], timeOfStart[4]).toISOString()
+  let timeOfStart = new Date(dateTime)
+  let timeOfEnd = new Date(timeOfStart.getFullYear(),timeOfStart.getMonth(), timeOfStart.getDay(), timeOfStart.getHours(), timeOfStart.getMinutes() + 1)
+  console.log(timeOfStart.toISOString());
+  console.log(timeOfEnd.toISOString());
   try {
-    const res = await axios.get(`https://api.stormglass.io/v2/weather/point?start=${timeOfStart}&end=${timeOfEnd}&lat=${location.lat}&lng=${location.long}&params=${params}`, {
+    const res = await axios.get(`https://api.stormglass.io/v2/weather/point?start=${timeOfStart.toISOString()}&end=${timeOfEnd.toISOString()}&lat=${location.lat}&lng=${location.long}&params=${params}`, {
       headers: {
         'Authorization': KEY
       }

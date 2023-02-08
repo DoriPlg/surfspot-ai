@@ -1,10 +1,8 @@
-//import {HomePage} from './pages/home-page.jsx'
-//import {AboutUs} from './pages/about-us.jsx'
-//import {CarApp} from './pages/car-app.jsx'
 
 import { BestBeach } from "./pages/bestBeach";
 import { Home } from "./pages/home";
 import { Test } from "./pages/test";
+// import { Test2 } from "./pages/test2";
 
 const routes = [
     {
@@ -15,6 +13,10 @@ const routes = [
        path:'/test',
        component: <Test/>,
     },
+    // {
+    //    path:'/test2',
+    //    component: <Test2/>,
+    // },
     {
         path:'/bestBeach',
         component: <BestBeach/>,

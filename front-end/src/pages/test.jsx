@@ -2,7 +2,7 @@ import React, { Component, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { testService } from '../services/testApi.js';
 import axios from "axios";
-import { type } from 'os';
+// import { type } from 'os';
 
 class _Test extends Component {
     state = {

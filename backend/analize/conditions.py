@@ -46,7 +46,6 @@ def sea_dict(timed = datetime.now(timezone.utc)):
     df = pd.DataFrame(x["hours"][0])   # REMEMBER TO SWITCH THESE^
     """
     df = pd.DataFrame(pull_data(timed)["hours"][0])
-    df.to_json(r'~/Documents/Code/BestBeach/backend/analize/keys and data/sea_data.json')
     mean_val = {}
     columns = list(df)
     for col in columns:

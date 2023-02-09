@@ -51,7 +51,9 @@ def sea_dict(timed = datetime.now(timezone.utc)):
     columns = list(df)
     for col in columns:
         if col == "time": continue
-        if col == "windDirection": mean_val[col] = df[col]["noaa"]
+        if col == "windDirection" | "swellHeight" | "swellDirections" | "swellPeriod": 
+            mean_val[col] = df[col]["sg"]
+            continue
         mean_val[col] = df[col].median()
     return mean_val
 

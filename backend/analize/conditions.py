@@ -19,10 +19,11 @@ def pull_data(timed = datetime.now(timezone.utc)):
         'Authorization': key
     }
     )
+    res = response.json()
     f = open("/home/dori/Documents/Code/BestBeach/backend/analize/keys and data/pulls.txt", "a")
-    f.write(str(response.json()))
+    f.write(str(res))
     f.close()
-    return response.json()
+    return res
 
 
 # makes a dictionary of the desired sea conditions
@@ -72,7 +73,10 @@ def get_tide(timed = datetime.now(timezone.utc)):
         'Authorization': key
     }
     )
-    d_tide = response.json()["data"]
+    d_tide = response.json()
+    f = open("/home/dori/Documents/Code/BestBeach/backend/analize/keys and data/pulls.txt", "a")
+    f.write(str(d_tide))
+    f.close()
     #"""
     # d_tide = [{'height': 0.012778267802382953, 'time': '2023-02-07T06:04:00+00:00', 'type': 'high'}, {'height': -0.0261013218364069, 'time': '2023-02-07T10:43:00+00:00', 'type': 'low'}, {'height': 0.08379443397049985, 'time': '2023-02-07T17:25:00+00:00', 'type': 'high'}]  
     min_delta = 7*3600

@@ -29,6 +29,7 @@ class _AddReview extends Component {
     }
     onToggleReview = () => {
         this.setState(prevState => ({ ...prevState, isReview: !prevState.isReview }))
+        console.log(this.state.isReview);
     }
     handleChange = (ev) => {
         this.setState((prevState) => ({ ...prevState, age: ev.target.value }))
@@ -41,7 +42,7 @@ class _AddReview extends Component {
     }
     onAddReview = async (ev) => {
         let { dateTime, rating, beachName } = this.state
-        dateTime=dayjs(dateTime).toISOString()
+        dateTime = dayjs(dateTime).toISOString()
         let conditions = await weatherApiService.getConditions({ lat: 32.165804, long: 34.797245 }, dateTime)
         console.log(conditions)
     }
@@ -61,10 +62,9 @@ class _AddReview extends Component {
                 {isReview &&
                     <>
                         <div className="screen" onClick={this.onToggleReview}></div>
-
                         <div className="review-form">
                             <h1>Rate a Beach</h1>
-                            <div className=" fas fa-xmark"></div>
+                            <div className=" fas fa-xmark" onClick={this.onToggleReview}></div>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <FormControl fullWidth>
                                     <InputLabel id="demo-simple-select-label">Beach Name</InputLabel>

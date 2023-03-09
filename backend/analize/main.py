@@ -202,7 +202,7 @@ def loadKeys():
 
 
 # returns calculated list of beaches for a given date-time string - formatted YYYY-MM-DD%20HH:mm
-@app.get("/numcrunch/#/{check_for}")
+@app.get("/numcrunch/{check_for}")
 def sendlist(check_for = datetime.now(timezone.utc)):
     grand_mongo()
     if check_for == "NOW": check_for = datetime.now(timezone.utc)
@@ -212,7 +212,7 @@ def sendlist(check_for = datetime.now(timezone.utc)):
 
 
 # returns conditions for a given date-time string - formatted YYYY-MM-DD%20HH:mm
-@app.get("/conditions/#/{check_for}")
+@app.get("/conditions/{check_for}")
 def cond_time(check_for = datetime.now(timezone.utc)):
     grand_mongo()
     if check_for == "NOW": check_for = datetime.now(timezone.utc)

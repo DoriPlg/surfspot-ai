@@ -19,10 +19,11 @@ def pull_data(timed = datetime.now(timezone.utc)):
         'Authorization': key
     }
     )
+    res = response.json()
     f = open("/home/dori/Documents/Code/BestBeach/backend/analize/keys and data/pulls.txt", "a")
-    f.write(str(response.json()))
+    f.write(str(res))
     f.close()
-    return response.json()
+    return res
 
 
 # makes a dictionary of the desired sea conditions
@@ -46,11 +47,12 @@ def sea_dict(timed = datetime.now(timezone.utc)):
     df = pd.DataFrame(x["hours"][0])   # REMEMBER TO SWITCH THESE^
     """
     df = pd.DataFrame(pull_data(timed)["hours"][0])
-    df.to_json(r'~/Documents/Code/BestBeach/backend/analize/keys and data/sea_data.json')
     mean_val = {}
     columns = list(df)
     for col in columns:
-        if col == "time":
+        if col == "time": continue
+        if col == "windDirection" | "swellHeight" | "swellDirections" | "swellPeriod": 
+            mean_val[col] = df[col]["sg"]
             continue
         mean_val[col] = df[col].median()
     return mean_val
@@ -73,11 +75,14 @@ def get_tide(timed = datetime.now(timezone.utc)):
         'Authorization': key
     }
     )
-    d_tide = response.json()["data"]
+    res = response.json()
+    f = open("/home/dori/Documents/Code/BestBeach/backend/analize/keys and data/pulls.txt", "a")
+    f.write(str(res))
+    f.close()
+    d_tide = res["data"]
     #"""
     # d_tide = [{'height': 0.012778267802382953, 'time': '2023-02-07T06:04:00+00:00', 'type': 'high'}, {'height': -0.0261013218364069, 'time': '2023-02-07T10:43:00+00:00', 'type': 'low'}, {'height': 0.08379443397049985, 'time': '2023-02-07T17:25:00+00:00', 'type': 'high'}]  
     min_delta = 7*3600
-    ref = None
     for i in d_tide:
         duration = datetime.strptime(i["time"],'%Y-%m-%dT%H:%M:%S%z')-timed
         delta = abs(duration.total_seconds())

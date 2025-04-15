@@ -5,7 +5,7 @@ and a list of conditions for a given time.
 """
 from datetime import datetime, timezone, timedelta
 import pandas as pd
-import requests
+import requests # type: ignore
 from utils import read_key
 
 

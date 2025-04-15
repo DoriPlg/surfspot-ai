@@ -12,8 +12,12 @@ def load_keys()->dict[str, str]:
     Loads the keys for MongoDB from a json file
     :return: dictionary with the keys
     """
-    f = open("../keysForMongo.json")
-    return json.load(f)
+    f = open("../keysForMongo.json", "r", encoding="utf-8")
+    if f is None:
+        raise SystemError("File not found")
+    keys = json.load(f)
+    f.close()
+    return keys
 
 def connect_to_mongo() -> pymongo.MongoClient:
     """

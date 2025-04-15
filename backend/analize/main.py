@@ -3,15 +3,14 @@ This is the main file for the backend of the Best Beach project.
 It contains the FastAPI application and the main functions for handling requests.
 """
 from datetime import datetime, timezone
-import json
 import pandas as pd
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-import pymongo
-import model, conditions
+import model
+import conditions
 import database_handler as dhn
-from utils import get_beaches, change_time_zone, make_random_table
+from utils import get_beaches, change_time_zone
 
 
 
@@ -97,8 +96,8 @@ def cond_time(check_for = datetime.now(timezone.utc)):
     return JSONResponse(content=this_day.to_dict())
 
 
-@app.get("/addrev/datetime={dateTime}&beach={beach}&rate={rate}")
-def new_review(datetime: str, beach: str, rate: str) -> JSONResponse:
+@app.get("/addrev/datetime={date_time}&beach={beach}&rate={rate}")
+def new_review(date_time: str, beach: str, rate: str) -> JSONResponse:
     """
     Adds a review to the database - time formatted YYYY-MM-DD%20HH:mm
     :param dateTime: datetime object or string in the format YYYY-MM-DD%20HH:mm
@@ -109,7 +108,7 @@ def new_review(datetime: str, beach: str, rate: str) -> JSONResponse:
     client = dhn.connect_to_mongo()
     db = client["Reviews"]
     collection = db["From Web"]
-    row = conditions.day_list(change_time_zone(datetime))
+    row = conditions.day_list(change_time_zone(date_time))
     row["Beach"] = beach
     row["Rating"] = float(rate)
     collection.insert_one(row.to_dict())
@@ -129,4 +128,3 @@ class DataError(Exception):
     """
     Custom exception for data errors
     """
-    pass

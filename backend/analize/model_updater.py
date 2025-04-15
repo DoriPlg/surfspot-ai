@@ -12,6 +12,7 @@ def update_model_from_db(beach: str, db: pymongo) -> None:
     Updates the model from the database
     :param beach: name of the beach for which the model is trained
     :param db: database connection
+    :raises ConnectionError: if the connection to the database fails
     """
     try:
         data = db["Sharon Beaches"]
@@ -20,19 +21,20 @@ def update_model_from_db(beach: str, db: pymongo) -> None:
 
         update_model(beach, data)
     except pymongo.errors.ConnectionFailure as e:
-        raise SystemError("Trouble connecting to server") from e
+        raise ConnectionError("Trouble connecting to server") from e
 
 def update_model_from_csv(beach: str, csv_path: str) -> None:
     """
     Updates the model from the csv file
     :param beach: name of the beach for which the model is trained
     :param csv_path: path to the csv file
+    :raises FileNotFoundError: if the file is not found
     """
     try:
         data = pd.read_csv(csv_path)
         update_model(beach, data)
     except FileNotFoundError as e:
-        raise SystemError("File not found") from e
+        raise FileNotFoundError("File not found") from e
 
 def update_model(beach: str, data: pd.DataFrame) -> None:
     """

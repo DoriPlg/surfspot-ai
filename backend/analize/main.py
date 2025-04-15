@@ -25,7 +25,8 @@ def rate_for_current(today: pd.DataFrame, beach: str)-> float:
         return model.predict(today, beach)
     except FileNotFoundError as exc:
         print(exc)
-        raise SystemError("Model not found. Please train the model first.") from exc
+        raise SystemError(f"Model not found. Please train the model for {beach} first.")\
+                            from exc
 
 def best_list(weather_metrics: pd.DataFrame) -> dict[str, float]:
     """
@@ -69,7 +70,7 @@ def parse_check_for(check_for) -> datetime:
     elif isinstance(check_for, str):
         check_for = change_time_zone(check_for)
     elif not isinstance(check_for, datetime):
-        raise ValueError("Invalid date format")
+        raise ValueError("Invalid date format from client. Use YYYY-MM-DD%20HH:mm or NOW")
     return check_for
 
 
@@ -81,8 +82,11 @@ def sendlist(check_for = datetime.now(timezone.utc)) -> JSONResponse:
     :return: JSONResponse with the list of beaches and their rating
     """
     this_day = conditions.day_list(parse_check_for(check_for))
-    return JSONResponse(content={"conditions": this_day.to_dict(),
+    try:
+        return JSONResponse(content={"conditions": this_day.to_dict(),
                                  "beachList": best_list(this_day)})
+    except DataError:
+        return JSONResponse(content={"Error": "No beaches found"}, status_code=500)
 
 
 @app.get("/conditions/{check_for}")
@@ -105,12 +109,24 @@ def new_review(date_time: str, beach: str, rate: str) -> JSONResponse:
     :param rate: rating for the beach
     :return: JSONResponse with the response
     """
-    client = dhn.connect_to_mongo()
+    try:
+        client = dhn.connect_to_mongo()
+    except FileNotFoundError as exc:
+        return JSONResponse(content={"Error": exc}, status_code=500)
+    except ConnectionError as exc:
+        return JSONResponse(content={"Error": exc}, status_code=500)
     db = client["Reviews"]
     collection = db["From Web"]
-    row = conditions.day_list(change_time_zone(date_time))
-    row["Beach"] = beach
+    try:
+        row = conditions.day_list(change_time_zone(date_time))
+    except ValueError as exc:
+        return JSONResponse(content={"Error": exc}, status_code=400)
+    except TimeoutError as exc:
+        return JSONResponse(content={"Error": exc}, status_code=408)
+    except ConnectionError as exc:
+        return JSONResponse(content={"Error": exc}, status_code=500)
     row["Rating"] = float(rate)
+    row["Beach"] = beach
     collection.insert_one(row.to_dict())
     return JSONResponse(content={"Response":"Successfuly uploaded"})
 

@@ -15,12 +15,13 @@ def prepare_data(data:pd.DataFrame)->pd.DataFrame:
     Prepares the data for training by cleaning and transforming it
     :param data: DataFrame to prepare
     :return: cleaned and transformed DataFrame
+    :raises AttributeError: if the data does not contain the required attributes
     """
     # Clean the data
     data = data.dropna()
     for attr in CORE_ATTRIBUTES:
         if attr not in data.columns:
-            raise ValueError(f"Missing attribute {attr} in data")
+            raise AttributeError(f"Missing attribute {attr} in data")
 
     # Transform the data
     data["Wind Qual"] = np.zeros(len(data))
@@ -41,7 +42,7 @@ def train_model(data:pd.DataFrame) -> linear_model.LinearRegression:
     data = prepare_data(data)
     X = data[USED_ATTRIBUTES]
     y = data["Rating"]
-    # Because a bad day surfing beats a good day at work
+    # Intercept, because a bad day surfing beats a good day at work
     model = linear_model.LinearRegression(fit_intercept=True)
     model.fit(X.values, y)
     return model
@@ -62,6 +63,7 @@ def load_model(beach:str) -> linear_model.LinearRegression:
     Loads the model from a file
     :param beach: name of the beach for which the model is trained
     :return: loaded model
+    :raises FileNotFoundError: if the model file is not found
     """
     try:
         with open(f"{beach}.onnx", "rb") as f:

@@ -2,19 +2,16 @@
 This is the main file for the backend of the Best Beach project.
 It contains the FastAPI application and the main functions for handling requests.
 """
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 import json
-import copy
 import pandas as pd
-import numpy.random as rnd
-from sklearn import linear_model
-import pymongo
-import conditions
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-import model
-from utils import get_beaches, change_time_zone
+import pymongo
+import model, conditions
+import database_handler as dhn
+from utils import get_beaches, change_time_zone, make_random_table
 
 
 
@@ -31,9 +28,7 @@ def rate_for_current(today: pd.DataFrame, beach: str)-> float:
         print(exc)
         raise SystemError("Model not found. Please train the model first.") from exc
 
-
-
-def best_list(conditions: pd.DataFrame) -> dict[str, float]:
+def best_list(weather_metrics: pd.DataFrame) -> dict[str, float]:
     """
     Returns sorted list of beaches and their rating
     :param conditions: dataframe of conditions containing the relevant data
@@ -45,64 +40,12 @@ def best_list(conditions: pd.DataFrame) -> dict[str, float]:
     if len(beach_names) == 0:
         print("No beaches found")
         raise DataError("No beaches found")
-    
+
     for beach in beach_names:
-        x = rate_for_current(conditions, beach)
+        x = rate_for_current(weather_metrics, beach)
         print("For", beach,'-', x)
         beach_conditions[beach] = x
     return beach_conditions
-
-
-
-# assign dataframe from MongoDB
-def grand_mongo():
-    global grand
-    try:
-        client = pymongo.MongoClient("mongodb+srv://"+loadKeys()['user']+":"+loadKeys()["password"]+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
-        db = client["Reviews"]
-        collection = db["Sharon Beaches"]
-    except:
-        raise SystemError("Trouble connecting to server")
-    jdict = {}
-    docs = collection.find({})
-    for doc in docs:
-        jdict.update(doc)
-    grand = pd.DataFrame(jdict)
-
-
-# assign dataframe from review MongoDB
-def grand_reviews():
-    global grand
-    try:
-        client = pymongo.MongoClient("mongodb+srv://"+loadKeys()['user']+":"+loadKeys()["password"]+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
-        db = client["Reviews"]
-        collection = db["From Web"]
-    except:
-        raise SystemError("Trouble connecting to server")
-    jdict = []
-    docs = collection.find({})
-    for doc in docs:
-        jdict.append(doc)
-    grand = pd.DataFrame(jdict)
-
-
-# creates a json file to use as the data source (fictive)
-def update_json():
-    grand = make_random_table(100)
-    grand.to_json(r'~/Documents/Code/BestBeach/backend/analize/keys and data/GreatBigData.json')
-    print("Done")
-
-
-# assign dataframe from local json file (for testing)
-def grand_json():
-    global grand
-    grand = pd.read_json('/home/dori/Documents/Code/BestBeach/backend/analize/keys and data/GreatBigData.json')
-
-
-def loadKeys():
-    f = open("/home/dori/Documents/Code/keysForMongo.json")
-    data = json.load(f)
-    return(data)
 
 
 if __name__=="__main__":
@@ -116,57 +59,70 @@ if __name__=="__main__":
         allow_headers=["*"],
     )
 
-# returns calculated list of beaches for a given date-time string - formatted YYYY-MM-DD%20HH:mm
+def parse_check_for(check_for) -> datetime:
+    """
+    Parses the check_for parameter to a datetime object
+    :param check_for: datetime object or string in the format YYYY-MM-DD%20HH:mm
+    :return: datetime object
+    """
+    if check_for == "NOW":
+        check_for = datetime.now(timezone.utc)
+    elif isinstance(check_for, str):
+        check_for = change_time_zone(check_for)
+    elif not isinstance(check_for, datetime):
+        raise ValueError("Invalid date format")
+    return check_for
+
+
 @app.get("/numcrunch/{check_for}")
-def sendlist(check_for = datetime.now(timezone.utc)):
-    grand_mongo()
-    if check_for == "NOW": check_for = datetime.now(timezone.utc)
-    elif type(check_for) == str: check_for = change_time_zone(check_for)
-    this_day = conditions.day_list(check_for)
-    return JSONResponse(content={"conditions": {
-        "windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]}, "beachList": best_list(this_day)})
+def sendlist(check_for = datetime.now(timezone.utc)) -> JSONResponse:
+    """
+    Returns calculated list of beaches for a given date-time string - formatted YYYY-MM-DD%20HH:mm
+    :param check_for: datetime object or string in the format YYYY-MM-DD%20HH:mm
+    :return: JSONResponse with the list of beaches and their rating
+    """
+    this_day = conditions.day_list(parse_check_for(check_for))
+    return JSONResponse(content={"conditions": this_day.to_dict(),
+                                 "beachList": best_list(this_day)})
 
 
-# returns conditions for a given date-time string - formatted YYYY-MM-DD%20HH:mm
 @app.get("/conditions/{check_for}")
 def cond_time(check_for = datetime.now(timezone.utc)):
-    grand_mongo()
-    if check_for == "NOW": check_for = datetime.now(timezone.utc)
-    elif type(check_for) == str: check_for = change_time_zone(check_for)
-    this_day = conditions.day_list(check_for)
-    return JSONResponse(content={"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]})
+    """
+    Returns conditions for a given date-time string - formatted YYYY-MM-DD%20HH:mm
+    :param check_for: datetime object or string in the format YYYY-MM-DD%20HH:mm
+    :return: JSONResponse with the conditions for the given date-time
+    """
+    this_day = conditions.day_list(parse_check_for(check_for))
+    return JSONResponse(content=this_day.to_dict())
 
 
-# adds a review to the database - time formatted YYYY-MM-DD%20HH:mm
 @app.get("/addrev/datetime={dateTime}&beach={beach}&rate={rate}")
-def new_review(dateTime, beach, rate):
-    try:
-        client = pymongo.MongoClient("mongodb+srv://"+loadKeys()['user']+":"+loadKeys()["password"]+"@cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
-        db = client["Reviews"]
-        collection = db["From Web"]
-    except:
-        return JSONResponse(content={"Response":"Error connecting to server"})
-    try: row = conditions.day_list(makeIsrTime(dateTime))
-    except: return JSONResponse(content={"Response":"Error handling time"})
-    day_dic = {
-        "Beach": beach,
-        "Tide":row[5],
-        "Wind Sp": row[0],
-        "Wind Dir": row[1],
-        "Wind Qual": wind_dir(row[1])*row[0],
-        "Swell Hgt": row[2],
-        "Swell Dir": row[3],
-        "Swell Prd": row[4],
-        "Rating": rate}
-    collection.insert_one(day_dic)
+def new_review(datetime: str, beach: str, rate: str) -> JSONResponse:
+    """
+    Adds a review to the database - time formatted YYYY-MM-DD%20HH:mm
+    :param dateTime: datetime object or string in the format YYYY-MM-DD%20HH:mm
+    :param beach: name of the beach
+    :param rate: rating for the beach
+    :return: JSONResponse with the response
+    """
+    client = dhn.connect_to_mongo()
+    db = client["Reviews"]
+    collection = db["From Web"]
+    row = conditions.day_list(change_time_zone(datetime))
+    row["Beach"] = beach
+    row["Rating"] = float(rate)
+    collection.insert_one(row.to_dict())
     return JSONResponse(content={"Response":"Successfuly uploaded"})
 
 
-#returns the beaches currently in the database
 @app.get("/which_beaches")
-def beaches():
-    grand_mongo()
-    return JSONResponse(content={"Beaches":get_beaches(grand)})
+def beaches() -> JSONResponse:
+    """
+    Returns a list of beaches for which we have models
+    :return: JSONResponse with the list of beaches
+    """
+    return JSONResponse(content={"Beaches":get_beaches()})
 
 
 class DataError(Exception):

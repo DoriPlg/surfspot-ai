@@ -12,7 +12,7 @@ BEACH_NAMES = ["Marina main", "Gazibo", "9Beach", "Sidni Ali"]
 ONSHORE = 280
 
 
-def change_time_zone(timeString: str, time_zone: int = 2) -> pd.Timestamp:
+def change_time_zone(timeString: str, time_zone: int = 2) -> datetime:
     """
     Adjust the time for local time zone
     :param timeString: string of the time in the format YYYY-MM-DD%20HH:mm
@@ -21,8 +21,7 @@ def change_time_zone(timeString: str, time_zone: int = 2) -> pd.Timestamp:
     """
     timeString = timeString.replace("%20", " ")
     time = datetime.strptime(timeString, "%Y-%m-%d %H:%M")
-    time = time + timedelta(hours=time_zone)
-    return pd.Timestamp(time)
+    return time + timedelta(hours=time_zone)
 
 
 
@@ -49,8 +48,6 @@ def read_key() -> str:
     with open('backend/analize/keys and data/access_key.txt', 'r', encoding='utf-8') as f:
         return f.read().strip()
 
-
-
 def wind_dir(deg: float) -> int:
     """
     returns number representing wind direction in relation to shore
@@ -71,7 +68,6 @@ def wind_dir(deg: float) -> int:
         if 20 <= deg <= 190:
             return 3  # side-offshore
         return 4  # side-onshore
-
 
 def random_beaches(size: int = 100) -> list:
     """
@@ -112,17 +108,13 @@ def random_wind_conditions(size: int = 100) -> dict[str,np.ndarray]:
     """
     Returns a dictionary of random wind conditions
     :param size: number of wind conditions to return
-    :return: dictionary of wind conditions, keyed by "Wind Sp", "Wind Dir", "Wind Qual"
+    :return: dictionary of wind conditions, keyed by "Wind Sp", "Wind Dir"
     """
     wind_s = np.round(rnd.normal(12, 4.3, size),decimals=2)
     wind_d = rnd.normal(ONSHORE, 130, size)
-    wind_q = []
-    for i in range(size):
-        wind_q.append(wind_dir(wind_d[i]) * wind_s[i])
     return {
         "Wind Sp": wind_s,
-        "Wind Dir": wind_d,
-        "Wind Qual": wind_q
+        "Wind Dir": wind_d
     }
 
 def random_swell(size: int = 100) -> dict[str,np.ndarray]:

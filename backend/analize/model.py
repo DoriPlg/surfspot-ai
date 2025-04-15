@@ -5,9 +5,10 @@ import pandas as pd
 import numpy as np
 import sklearn.linear_model as linear_model
 from skl2onnx import to_onnx
+from utils import wind_dir
 
-USED_ATTRIBUTES = ["Wind Qual", "Swell Hgt", "Swell Dir", "Swell Prd","Wind Sp", "Wind Dir",
-                     "Wind Dir^2", "Wind Dir^3","Tide", "Tide^2"]
+CORE_ATTRIBUTES = ["Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide"]
+USED_ATTRIBUTES = ["Wind Qual", "Wind Dir^2", "Wind Dir^3","Tide^2"] + CORE_ATTRIBUTES
 
 def prepare_data(data:pd.DataFrame)->pd.DataFrame:
     """
@@ -17,8 +18,14 @@ def prepare_data(data:pd.DataFrame)->pd.DataFrame:
     """
     # Clean the data
     data = data.dropna()
+    for attr in CORE_ATTRIBUTES:
+        if attr not in data.columns:
+            raise ValueError(f"Missing attribute {attr} in data")
 
     # Transform the data
+    data["Wind Qual"] = np.zeros(len(data))
+    for i in range(len(data)):
+        data["Wind Qual"][i] = data["Wind Sp"][i] * wind_dir(data["Wind Dir"][i])
     data["Wind Dir^2"] = data["Wind Dir"]**2
     data["Wind Dir^3"] = data["Wind Dir"]**3 # Careful not to overfit (?)
     data["Tide^2"] = data["Tide"]**2

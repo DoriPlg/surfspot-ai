@@ -1,88 +1,57 @@
+"""
+This is the main file for the backend of the Best Beach project.
+It contains the FastAPI application and the main functions for handling requests.
+"""
+from datetime import datetime, timezone, timedelta
+import json
+import copy
 import pandas as pd
 import numpy.random as rnd
 from sklearn import linear_model
-import copy
 import pymongo
-from fastapi import FastAPI
 import conditions
-from datetime import datetime, timezone, timedelta
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-import json
+import model
+from utils import get_beaches, change_time_zone
 
 
 
-app = FastAPI()
-# pd.set_option('display.max_columns', None)
-pd.set_option('display.max_rows', None)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-
-# returns the foreseen "actual" rating for certain conditions, in a certain beach, in a given dataframe
-def rate_for_current(today: list, beach: str, main_data: pd.DataFrame):
-    df = copy.copy(main_data)
-    for x in df.index:
-        if df.loc[x, "Tide"] != today[-1]:
-            df.drop(x, inplace=True)
-    # print(df)
-    for x in df.index:
-        if df.loc[x, "Beach"] != beach:
-            df.drop(x, inplace=True)
-    X = df[["Wind Qual", "Swell Hgt", "Swell Dir", "Swell Prd"]]
-    y = df["Actual"]
+def rate_for_current(today: pd.DataFrame, beach: str)-> float:
+    """
+    Returns the foreseen "Rating" for certain conditions, in a certain beach, in a given dataframe
+    :param today: list of conditions [Wind Sp, Wind Dir, Swell Hgt, Swell Dir, Swell Prd]
+    :param beach: name of the beach
+    :return: the foreseen rating
+    """
     try:
-        regress = linear_model.LinearRegression()
-        regress.fit(X.values, y)
-        today = [today[0:-1:]]
-        return regress.predict(today)[0]
-    except:
-        if len(df.index) < 3: return "Not enough data to calculate"
-        else: return "An unknown error occurred"
+        return model.predict(today, beach)
+    except FileNotFoundError as exc:
+        print(exc)
+        raise SystemError("Model not found. Please train the model first.") from exc
 
 
-# returns the names of the beaches currently in the DataFrame
-def get_beaches(df: pd.DataFrame):
-    beach_list = df["Beach"].tolist()
-    beach_set = set()
-    for beach in beach_list: beach_set.add(beach)
-    beach_list = []
-    for beach in beach_set: beach_list.append(beach)
-    return beach_list
 
+def best_list(conditions: pd.DataFrame) -> dict[str, float]:
+    """
+    Returns sorted list of beaches and their rating
+    :param conditions: dataframe of conditions containing the relevant data
+    :return: dictionary of beaches and their rating
+    """
+    beach_names = get_beaches()
+    beach_conditions = {}
+    # conditions.insert(0, conditions.pop(0)*wind_dir(conditions.pop(0)))
+    if len(beach_names) == 0:
+        print("No beaches found")
+        raise DataError("No beaches found")
+    
+    for beach in beach_names:
+        x = rate_for_current(conditions, beach)
+        print("For", beach,'-', x)
+        beach_conditions[beach] = x
+    return beach_conditions
 
-# returns sorted list of beaches and their rating
-def best_list(conditions: list):
-    beach_names = []
-    cond_list = []
-    conditions.insert(0, conditions.pop(0)*wind_dir(conditions.pop(0)))
-    if len(beach_names) == 0: beach_names = get_beaches(grand)
-    for i in beach_names:
-        x = rate_for_current(conditions, i, grand)
-        if type(x) == str: 
-            print("For", i,'-', x)
-            continue
-        a = 0
-        try:
-            while x < cond_list[a][1]:
-                a += 1
-            cond_list.insert(a, [i, x])
-        except:
-            cond_list.append([i, x])
-    return cond_list
-
-
-def makeIsrTime(timeString: str):
-    timeString = datetime.strptime(timeString, "%Y-%m-%d %H:%M")- timedelta(0, 0, 0, 0, 0, 2, 0)
-    timeString = timeString.replace(tzinfo=timezone.utc)
-    return timeString
 
 
 # assign dataframe from MongoDB
@@ -136,14 +105,26 @@ def loadKeys():
     return(data)
 
 
+if __name__=="__main__":
+    app = FastAPI()
+    pd.set_option('display.max_rows', None)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
 # returns calculated list of beaches for a given date-time string - formatted YYYY-MM-DD%20HH:mm
 @app.get("/numcrunch/{check_for}")
 def sendlist(check_for = datetime.now(timezone.utc)):
     grand_mongo()
     if check_for == "NOW": check_for = datetime.now(timezone.utc)
-    elif type(check_for) == str: check_for = makeIsrTime(check_for)
+    elif type(check_for) == str: check_for = change_time_zone(check_for)
     this_day = conditions.day_list(check_for)
-    return JSONResponse(content={"conditions": {"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]}, "beachList": best_list(this_day)})
+    return JSONResponse(content={"conditions": {
+        "windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]}, "beachList": best_list(this_day)})
 
 
 # returns conditions for a given date-time string - formatted YYYY-MM-DD%20HH:mm
@@ -151,7 +132,7 @@ def sendlist(check_for = datetime.now(timezone.utc)):
 def cond_time(check_for = datetime.now(timezone.utc)):
     grand_mongo()
     if check_for == "NOW": check_for = datetime.now(timezone.utc)
-    elif type(check_for) == str: check_for = makeIsrTime(check_for)
+    elif type(check_for) == str: check_for = change_time_zone(check_for)
     this_day = conditions.day_list(check_for)
     return JSONResponse(content={"windSpeed":this_day[0], "windDirection":this_day[1], "swellHeight":this_day[2], "swellDirection":this_day[3], "swellPeriod":this_day[4], "tide":this_day[5]})
 
@@ -176,7 +157,7 @@ def new_review(dateTime, beach, rate):
         "Swell Hgt": row[2],
         "Swell Dir": row[3],
         "Swell Prd": row[4],
-        "Actual": rate}
+        "Rating": rate}
     collection.insert_one(day_dic)
     return JSONResponse(content={"Response":"Successfuly uploaded"})
 
@@ -186,3 +167,10 @@ def new_review(dateTime, beach, rate):
 def beaches():
     grand_mongo()
     return JSONResponse(content={"Beaches":get_beaches(grand)})
+
+
+class DataError(Exception):
+    """
+    Custom exception for data errors
+    """
+    pass

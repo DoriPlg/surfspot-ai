@@ -1,12 +1,18 @@
-import requests
+"""
+This module pulls data from the Stormglass API and returns a dictionary of
+the desired sea conditions. It also provides functions to get the tide situation
+and a list of conditions for a given time.
+"""
 from datetime import datetime, timezone, timedelta
 import pandas as pd
+import requests
+from utils import read_key
 
 
 DATA_PARAMS =\
     ['windSpeed', 'windDirection', 'swellHeight', 'swellDirection', 'swellPeriod']
     # tide pulled separately
-ACCESS_KEY = 
+ACCESS_KEY = read_key()
 PULL_PARAMS = {
         'lat': 32.1761,
         'lng': 34.7984,
@@ -18,6 +24,7 @@ PULL_FILEPATH ="/home/dori/Documents/Code/BestBeach/backend/analize/keysNdata/pu
 TIDE_API_PATH = 'https://api.stormglass.io/v2/tide/extremes/point'
 FORECAST_API_PATH = 'https://api.stormglass.io/v2/weather/point'
 HALF_MOON_DAY = timedelta(0, 0, 0, 0, 12.5, 6, 0)
+
 
 def pull_data(forecast_type: str, timed:datetime = datetime.now(timezone.utc)) -> dict:
     """
@@ -123,18 +130,12 @@ def get_tide(timed: datetime = datetime.now(timezone.utc)) -> int:
     return tide_state
 
 
-def day_list(timed:datetime = datetime.now(timezone.utc)) -> list:
+def day_list(timed:datetime = datetime.now(timezone.utc)) -> pd.DataFrame:
     """
     Returns "Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide" for chosen time
     :param timed: datetime object, the time to pull data for
     :return: list of the data
     """
-    templ = sea_dict(timed)
-    the_list = [
-        templ["windSpeed"],
-        templ["windDirection"],
-        templ["swellHeight"],
-        templ["swellDirection"],
-        templ["swellPeriod"],
-        get_tide(timed)]
-    return the_list
+    df = pd.DataFrame.from_dict(sea_dict(timed))
+    df["Tide"] = get_tide(timed)
+    return df

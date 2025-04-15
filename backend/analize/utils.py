@@ -1,5 +1,10 @@
-import numpy.random as rnd
+"""
+This module provides utility functions for generating random data for beach conditions,
+as well as functions to read an API key and determine wind direction.
+"""
+from datetime import datetime, timedelta
 import numpy as np
+import numpy.random as rnd
 import pandas as pd
 
 
@@ -7,6 +12,42 @@ BEACH_NAMES = ["Marina main", "Gazibo", "9Beach", "Sidni Ali"]
 ONSHORE = 280
 
 
+def change_time_zone(timeString: str, time_zone: int = 2) -> pd.Timestamp:
+    """
+    Adjust the time for local time zone
+    :param timeString: string of the time in the format YYYY-MM-DD%20HH:mm
+    :time_zone: time difference from UTC
+    :return: datetime object
+    """
+    timeString = timeString.replace("%20", " ")
+    time = datetime.strptime(timeString, "%Y-%m-%d %H:%M")
+    time = time + timedelta(hours=time_zone)
+    return pd.Timestamp(time)
+
+
+
+def get_beaches() -> list:
+    """
+    Returns a list of all beaches in for which there are trained models,
+    Meaning we have *.onnx files for them
+    Optionally, keep a few beaches out of public knowledge
+    """
+    beaches = []
+    for beach in BEACH_NAMES:
+        try:
+            with open(f"{beach}.onnx", "rb") as _:
+                beaches.append(beach)
+        except FileNotFoundError:
+            continue
+    return beaches
+
+def read_key() -> str:
+    """
+    Reads the API key from the keys file
+    :return: API key as a string
+    """
+    with open('backend/analize/keys and data/access_key.txt', 'r', encoding='utf-8') as f:
+        return f.read().strip()
 
 
 
@@ -118,7 +159,7 @@ def make_random_table(size:int=100)->pd.DataFrame:
     tab = {
         "Beach": beach,
         "Tide": tide,
-        "Actual": ratings
+        "Rating": ratings
     }
     tab.update(wind)
     tab.update(swell)

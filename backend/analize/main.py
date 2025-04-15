@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import json
 
 
+
 app = FastAPI()
 # pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -23,72 +24,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
-# returns number representing wind direction in relation to shore
-# it is possible to add finer tuning!
-def wind_dir(deg):
-    while deg > 360 or deg < 0:
-        if deg > 360:
-            deg -= 360
-        if deg < 0:
-            deg += 360
-    if 325 >= deg >= 245:
-        return 2  # onshore
-    elif 140 >= deg >= 70:
-        return 1  # offshore
-    else:
-        if 20 <= deg <= 190: return 3  # side-offshore
-        return 4  # side-onshore
-
-
-# creates random data table, to work with. NO CORRELATION TO REALITY
-def make_table(size=100):
-    beach_names = ["Marina main", "Gazibo", "9Beach", "Sidni Ali"]
-    beach = []
-    wind_q = []
-    for i in range(size):
-        beach.append(beach_names[rnd.randint(0, len(beach_names))])
-    tide = rnd.randint(-1, 3, size)
-    for i in range(size):
-        if tide[i] == 1: tide[i] = 0
-        if tide[i] == 2: tide[i] = 1
-    actual = rnd.normal(5, 2, size)
-    for i in range(size):
-        actual[i] = round(actual[i], 0)
-        if actual[i] > 7:
-            actual[i] = 7
-        if actual[i] < 1:
-            actual[i] = 1
-    wind_s = rnd.normal(12, 4.3, size)
-    for i in range(size): wind_s[i] = round(wind_s[i], 1)
-    wind_d = rnd.normal(280, 130, size)
-    for i in range(size): wind_d[i] = round(wind_d[i], 0)
-    for i in range(size):
-        wind_q.append(wind_dir(wind_d[i])*wind_s[i])
-    swell_h = rnd.normal(1.3, 0.4, size)
-    for i in range(size): swell_h[i] = round(swell_h[i], 2)
-    swell_d = rnd.normal(280, 10, size)
-    for i in range(size):
-        swell_d[i] = round(swell_d[i], 0)
-        if swell_d[i] > 360:
-            swell_d[i] = 360
-        if swell_d[i] < 200:
-            swell_d[i] = 200
-    swell_p = rnd.normal(8.0, 1.5, size)
-    for i in range(size): swell_p[i] = round(swell_p[i], 0)
-    tab = {
-        "Beach": beach,
-        "Tide": tide,
-        "Wind Sp": wind_s,
-        "Wind Dir": wind_d,
-        "Wind Qual": wind_q,
-        "Swell Hgt": swell_h,
-        "Swell Dir": swell_d,
-        "Swell Prd": swell_p,
-        "Actual": actual
-    }
-    return pd.DataFrame(tab)
 
 
 # returns the foreseen "actual" rating for certain conditions, in a certain beach, in a given dataframe
@@ -184,7 +119,7 @@ def grand_reviews():
 
 # creates a json file to use as the data source (fictive)
 def update_json():
-    grand = make_table(100)
+    grand = make_random_table(100)
     grand.to_json(r'~/Documents/Code/BestBeach/backend/analize/keys and data/GreatBigData.json')
     print("Done")
 

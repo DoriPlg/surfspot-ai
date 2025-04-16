@@ -7,7 +7,7 @@ import sklearn.linear_model as linear_model
 from skl2onnx import to_onnx
 from utils import wind_dir
 
-CORE_ATTRIBUTES = ["Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide"]
+CORE_ATTRIBUTES = ["Wind Sp", "Wind Dir", "Swell Hgt", "Swell Dir", "Swell Prd", "Tide", "Rating"]
 USED_ATTRIBUTES = ["Wind Qual", "Wind Dir^2", "Wind Dir^3","Tide^2"] + CORE_ATTRIBUTES
 
 def prepare_data(data:pd.DataFrame)->pd.DataFrame:

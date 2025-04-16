@@ -92,7 +92,7 @@ def sea_dict(timed: datetime = datetime.now(timezone.utc)) -> dict:
     for col in columns:
         if col == "windSpeed":
             mean_val[col] = df[col].median()
-        elif col == "windDirection" | "swellHeight" | "swellDirections" | "swellPeriod":
+        elif col in ("windDirection", "swellHeight", "swellDirections", "swellPeriod"):
             mean_val[col] = df[col]["sg"]
     return mean_val
 
@@ -112,7 +112,7 @@ def get_tide(timed: datetime = datetime.now(timezone.utc)) -> int:
     # {'height': 0.08379443397049985, 'time': '2023-02-07T17:25:00+00:00', 'type': 'high'}
     # ]
     # Default values
-    min_delta = 7*3600
+    min_delta = 7.0*3600
     tide_state = 0
     for i in d_tide:
         duration = datetime.strptime(i["time"],'%Y-%m-%dT%H:%M:%S%z')-timed

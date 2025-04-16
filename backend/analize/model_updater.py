@@ -7,7 +7,7 @@ import pymongo
 import model as mdl
 
 
-def update_model_from_db(beach: str, db: pymongo) -> None:
+def update_model_from_db(beach: str, db: pymongo.MongoClient) -> None:
     """
     Updates the model from the database
     :param beach: name of the beach for which the model is trained
@@ -16,10 +16,10 @@ def update_model_from_db(beach: str, db: pymongo) -> None:
     """
     try:
         data = db["Sharon Beaches"]
-        data = list(data.find({"Beach": beach}))
+        data = data.find({"Beach": beach})
         # Maybe another movement is needed?
 
-        update_model(beach, data)
+        update_model(beach, list(data))
     except pymongo.errors.ConnectionFailure as e:
         raise ConnectionError("Trouble connecting to server") from e
 

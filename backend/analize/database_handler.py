@@ -28,13 +28,11 @@ def connect_to_mongo() -> pymongo.MongoClient:
     :raises FileNotFoundError: if the mongoDB keys are not in place
     """
     key = load_keys()
-    
+
     try:
-        client = pymongo.MongoClient(
+        client: pymongo.MongoClient = pymongo.MongoClient(
                 f"mongodb+srv://{key['user']}:{key["password"]}@\
                 cluster0.s7lzszz.mongodb.net/?retryWrites=true&w=majority")
         return client
     except pymongo.errors.ConnectionFailure as e:
         raise ConnectionError("Trouble connecting to server") from e
-
-
